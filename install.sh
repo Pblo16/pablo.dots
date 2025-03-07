@@ -3,15 +3,20 @@
 set -e # Detener el script si hay un error
 
 # 🎨 Colores
-GREEN="\e[32m"
-BLUE="\e[34m"
-YELLOW="\e[33m"
-RED="\e[31m"
+PINK=$(tput setaf 204)
+PURPLE=$(tput setaf 141)
+GREEN=$(tput setaf 114)
+ORANGE=$(tput setaf 208)
+BLUE=$(tput setaf 75)
+YELLOW=$(tput setaf 221)
+RED=$(tput setaf 196)
+NC=$(tput sgr0) # No Color
 BOLD="\e[1m"
 RESET="\e[0m"
 
 # 🔗 Variables
-BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+BREW_URL="hhttps://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim" "zoxide")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
@@ -78,20 +83,20 @@ copy_config_files() {
 }
 
 # 🔗 Función para crear symlinks
-create_symlinks() {
-  print_header "🔗 Creando symlinks"
-
-  FILES=(".zshrc" ".tmux.conf")
-  for file in "${FILES[@]}"; do
-    ln -sf "$CONFIG_DIR/$file" "$HOME/$file"
-    success_msg "Symlink creado: $HOME/$file → $CONFIG_DIR/$file"
-  done
-}
+# create_symlinks() {
+#   print_header "🔗 Creando symlinks"
+#
+#   FILES=(".zshrc" ".tmux.conf")
+#   for file in "${FILES[@]}"; do
+#     ln -sf "$CONFIG_DIR/$file" "$HOME/$file"
+#     success_msg "Symlink creado: $HOME/$file → $CONFIG_DIR/$file"
+#   done
+# }
 
 # 🚀 Ejecutar funciones
 install_homebrew
 install_packages
 copy_config_files
-create_symlinks
+# create_symlinks
 
 echo -e "${BOLD}${GREEN}🎉 Instalación completada con éxito.${RESET}"
