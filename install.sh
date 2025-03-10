@@ -148,7 +148,7 @@ if [ -d "pablo.dots" ]; then
   echo -e "${GREEN}Repository already cloned. Overwriting...${NC}"
   rm -rf "pablo.dots"
 fi
-clone_repository "https://github.com/Pblo16/pablo.dots.git" 20
+clone_repository "https://github.com/Pblo16/pablo.dots.git" "pablo.dots" 20
 cd pablo.dots || exit
 
 # Install Homebrew
