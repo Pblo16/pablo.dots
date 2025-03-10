@@ -79,6 +79,12 @@ install_homebrew() {
     echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.bashrc
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     success_msg "Homebrew instalado correctamente."
+
+    run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.zshrc)"
+    run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.bashrc)"
+    run_command "mkdir -p ~/.config/fish"
+    run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.config/fish/config.fish)"
+    run_command "eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\""
   else
     success_msg "Homebrew ya está instalado."
   fi
@@ -98,6 +104,17 @@ install_packages() {
   done
 }
 
+# Function to clone a repository with progress
+clone_repository() {
+  local repo_url="$1"
+  local clone_dir="$2"
+  local progress_duration=$3
+
+  echo -e "${YELLOW}Cloning repository...${NC}"
+  # Run clone command normally
+  git clone "$repo_url" "$clone_dir"
+}
+
 # 📂 Función para copiar archivos de configuración
 copy_config_files() {
   print_header "📂 Copiando archivos de configuración"
@@ -113,18 +130,6 @@ copy_config_files() {
   done
 }
 
-# Function to clone a repository with progress
-clone_repository() {
-  local repo_url="$1"
-  local clone_dir="$2"
-  local progress_duration=$3
-
-  echo -e "${YELLOW}Cloning repository...${NC}"
-  # Run clone command normally
-  git clone "$repo_url" "$clone_dir"
-}
-cd Gentleman.Dots || exit
-
 # 🔗 Función para crear symlinks
 # create_symlinks() {
 #   print_header "🔗 Creando symlinks"
@@ -137,7 +142,19 @@ cd Gentleman.Dots || exit
 # }
 
 # 🚀 Ejecutar funciones
+# Step 1: Clone the Repository
+echo -e "${YELLOW}Step 1: Clone the Repository${NC}"
+if [ -d "pablo.dots" ]; then
+  echo -e "${GREEN}Repository already cloned. Overwriting...${NC}"
+  rm -rf "pablo.dots"
+fi
+clone_repository "https://github.com/Pblo16/pablo.dots.git" 20
+cd pablo.dots || exit
+
+# Install Homebrew
 install_homebrew
+
+# Install packages
 install_packages
 copy_config_files
 # create_symlinks
