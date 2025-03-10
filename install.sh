@@ -38,6 +38,12 @@ error_msg() {
   echo -e "${RED}✖ $1${RESET}"
 }
 
+# Function to run commands with optional suppression of output
+run_command() {
+  local command=$1
+  eval $command &>/dev/null
+}
+
 # Function to prompt user for input with a select menu
 select_option() {
   local prompt_message="$1"
