@@ -16,8 +16,7 @@ RESET="\e[0m"
 
 # 🔗 Variables
 BREW_URL="hhttps://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim" "zoxide")
+PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim" "zoxide", "atuin")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
 
@@ -62,20 +61,47 @@ select_option() {
 
 #Install basic depenedencies
 install_dependencies() {
-  if is_arch; then
-    run_command "sudo pacman -Syu --noconfirm"
-    run_command "sudo pacman -S --needed --noconfirm base-devel curl file git wget"
-    run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
-    run_command ". $HOME/.cargo/env"
-  else
-    run_command "sudo apt-get update"
-    run_command "sudo apt-get install -y build-essential curl file git"
-    run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
-    run_command ". $HOME/.cargo/env"
-  fi
+  run_command "sudo apt-get update"
+  run_command "sudo apt-get install -y build-essential curl file git"
+  run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+  run_command ". $HOME/.cargo/env"
 }
 
-# 📦 Función para instalar Homebrew
+# Function to clone a repository with progress
+clone_repository() {
+  local repo_url="$1"
+  local clone_dir="$2"
+  local progress_duration=$3
+
+  echo -e "${YELLOW}Cloning repository...${NC}"
+  # Run clone command normally
+  git clone "$repo_url" "$clone_dir"
+}
+
+# 🔗 Función para crear symlinks
+# create_symlinks() {
+#   print_header "🔗 Creando symlinks"
+#
+#   FILES=(".zshrc" ".tmux.conf")
+#   for file in "${FILES[@]}"; do
+#     ln -sf "$CONFIG_DIR/$file" "$HOME/$file"
+#     success_msg "Symlink creado: $HOME/$file → $CONFIG_DIR/$file"
+#   done
+# }
+
+# 🚀 Ejecutar funciones
+# Step 1: Clone the repository
+echo -e "${YELLOW}Step 1: Clone the Repository${NC}"
+if [ -d "pablo.dots" ]; then
+  echo -e "${GREEN}Repository already cloned. Overwriting...${NC}"
+  rm -rf "pablo.dots"
+fi
+clone_repository "https://github.com/Pblo16/pablo.dots.git" "pablo.dots" 20
+cd pablo.dots || exit
+
+# Step 2: Install Homebrew
+echo -e "${YELLOW}Step 2: Install Homebrew"
+
 install_homebrew() {
   print_header "🛠️ Instalando Homebrew"
 
@@ -96,7 +122,10 @@ install_homebrew() {
   fi
 }
 
-# 📥 Función para instalar paquetes
+install_homebrew
+
+# Step 3: Install Dependencies
+echo -e "${YELLOW}Step 3: Dependencies"
 install_packages() {
   print_header "📦 Instalando paquetes con Homebrew"
 
@@ -110,59 +139,28 @@ install_packages() {
   done
 }
 
-# Function to clone a repository with progress
-clone_repository() {
-  local repo_url="$1"
-  local clone_dir="$2"
-  local progress_duration=$3
-
-  echo -e "${YELLOW}Cloning repository...${NC}"
-  # Run clone command normally
-  git clone "$repo_url" "$clone_dir"
-}
-
-# 📂 Función para copiar archivos de configuración
-copy_config_files() {
-  print_header "📂 Copiando archivos de configuración"
-
-  FILES=(".zshrc" ".tmux.conf")
-  for file in "${FILES[@]}"; do
-    if [ -f "$CONFIG_DIR/$file" ]; then
-      cp "$CONFIG_DIR/$file" "$DEST_DIR"
-      success_msg "$file copiado a $DEST_DIR."
-    else
-      error_msg "Archivo $file no encontrado en $CONFIG_DIR."
-    fi
-  done
-}
-
-# 🔗 Función para crear symlinks
-# create_symlinks() {
-#   print_header "🔗 Creando symlinks"
-#
-#   FILES=(".zshrc" ".tmux.conf")
-#   for file in "${FILES[@]}"; do
-#     ln -sf "$CONFIG_DIR/$file" "$HOME/$file"
-#     success_msg "Symlink creado: $HOME/$file → $CONFIG_DIR/$file"
-#   done
-# }
-
-# 🚀 Ejecutar funciones
-# Step 1: Clone the Repository
-echo -e "${YELLOW}Step 1: Clone the Repository${NC}"
-if [ -d "pablo.dots" ]; then
-  echo -e "${GREEN}Repository already cloned. Overwriting...${NC}"
-  rm -rf "pablo.dots"
-fi
-clone_repository "https://github.com/Pblo16/pablo.dots.git" "pablo.dots" 20
-cd pablo.dots || exit
-
-# Install Homebrew
-install_homebrew
-
-# Install packages
 install_packages
-copy_config_files
+
+#Step 4: Install Shell
+echo -e "${YELLOW}Step 4: Install Shell"
+
+install_shell() {
+  echo -e "${YELLOW}Configuring Zsh...${NC}"
+
+  mkdir -p ~/.cache/carapace
+  mkdir -p ~/.local/share/atuin
+
+  #install zsh4Humans
+  if command -v curl >/dev/null 2>&1; then
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
+  else
+    sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
+  fi
+
+  run_command "cp -rf .zshrc ~/"
+}
+
+install_shell
 # create_symlinks
 
 echo -e "${BOLD}${GREEN}🎉 Instalación completada con éxito.${RESET}"
