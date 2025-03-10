@@ -76,7 +76,6 @@ return {
         lualine_a = {
           {
             "mode", -- Display the current mode
-            icon = "󱗞", -- Set the icon for the mode
           },
         },
       },

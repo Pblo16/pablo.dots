@@ -38,6 +38,37 @@ error_msg() {
   echo -e "${RED}✖ $1${RESET}"
 }
 
+# Function to prompt user for input with a select menu
+select_option() {
+  local prompt_message="$1"
+  shift
+  local options=("$@")
+  PS3="${ORANGE}$prompt_message${NC} "
+  select opt in "${options[@]}"; do
+    if [ -n "$opt" ]; then
+      echo "$opt"
+      break
+    else
+      echo -e "${RED}Invalid option. Please try again.${NC}"
+    fi
+  done
+}
+
+#Install basic depenedencies
+install_dependencies() {
+  if is_arch; then
+    run_command "sudo pacman -Syu --noconfirm"
+    run_command "sudo pacman -S --needed --noconfirm base-devel curl file git wget"
+    run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+    run_command ". $HOME/.cargo/env"
+  else
+    run_command "sudo apt-get update"
+    run_command "sudo apt-get install -y build-essential curl file git"
+    run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+    run_command ". $HOME/.cargo/env"
+  fi
+}
+
 # 📦 Función para instalar Homebrew
 install_homebrew() {
   print_header "🛠️ Instalando Homebrew"
@@ -81,6 +112,18 @@ copy_config_files() {
     fi
   done
 }
+
+# Function to clone a repository with progress
+clone_repository() {
+  local repo_url="$1"
+  local clone_dir="$2"
+  local progress_duration=$3
+
+  echo -e "${YELLOW}Cloning repository...${NC}"
+  # Run clone command normally
+  git clone "$repo_url" "$clone_dir"
+}
+cd Gentleman.Dots || exit
 
 # 🔗 Función para crear symlinks
 # create_symlinks() {
