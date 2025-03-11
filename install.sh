@@ -16,7 +16,7 @@ RESET="\e[0m"
 
 # 🔗 Variables
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-PACKAGES=("fnm" "pnpm" "tmux" "neovim")
+PACKAGES=("fnm" "pnpm" "neovim" "jandedobbeleer/oh-my-posh/oh-my-posh")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
 
@@ -149,26 +149,18 @@ echo -e "${YELLOW}Step 4: Install Shell"
 
 install_shell() {
   echo -e "${YELLOW}Configuring Zsh...${NC}"
-  run_command "sudo apt install zsh"
+  run_command "sudo apt install zsh -y"
   #install zoxide
   run_command "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
   #install LSD
-  run_command "sudo apt install lsd"
+  run_command "sudo apt install lsd -y"
   #install atuin
   run_command "curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh"
 
   mkdir -p ~/.cache/carapace
   mkdir -p ~/.local/share/atuin
 
-  #install zsh4Humans
-  if command -v curl >/dev/null 2>&1; then
-    env bash -c "$(curl -fsSL https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-  else
-    env bash -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
-  fi
-
   run_command "cp -rf .zshrc ~/"
-  run_command "exec zsh"
 
 }
 
@@ -176,3 +168,4 @@ install_shell
 # create_symlinks
 
 echo -e "${BOLD}${GREEN}🎉 Instalación completada con éxito.${RESET}"
+exec zsh
