@@ -15,7 +15,7 @@ BOLD="\e[1m"
 RESET="\e[0m"
 
 # 🔗 Variables
-BREW_URL="hhttps://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim" "zoxide", "atuin")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
