@@ -65,6 +65,7 @@ install_dependencies() {
   run_command "sudo apt-get install -y build-essential curl file git"
   run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
   run_command ". $HOME/.cargo/env"
+  run_command "apt install lsd"
 }
 
 print_header "🛠️ Installing dependencies"
@@ -159,8 +160,8 @@ install_shell() {
   else
     sh -c "$(wget -O- https://raw.githubusercontent.com/romkatv/zsh4humans/v5/install)"
   fi
-
   run_command "cp -rf .zshrc ~/"
+  run_command "exec zsh"
 }
 
 install_shell
