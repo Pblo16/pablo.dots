@@ -67,6 +67,7 @@ install_dependencies() {
   run_command ". $HOME/.cargo/env"
 }
 
+echo -e "${YELLOW} Installing dependencies"
 install_dependencies
 
 # Function to clone a repository with progress
