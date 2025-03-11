@@ -16,7 +16,7 @@ RESET="\e[0m"
 
 # 🔗 Variables
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim" "zoxide", "atuin")
+PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim" "atuin")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
 
@@ -62,7 +62,6 @@ select_option() {
 #Install basic depenedencies
 install_dependencies() {
   run_command "sudo apt-get update"
-  run_command "sudo apt install lsd"
   run_command "sudo apt-get install -y build-essential curl file git"
   run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
   run_command ". $HOME/.cargo/env"
@@ -151,6 +150,10 @@ echo -e "${YELLOW}Step 4: Install Shell"
 install_shell() {
   echo -e "${YELLOW}Configuring Zsh...${NC}"
 
+  #install zoxide
+  run_command "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
+  #install LSD
+  run_command "sudo apt install lsd"
   mkdir -p ~/.cache/carapace
   mkdir -p ~/.local/share/atuin
 
@@ -162,6 +165,7 @@ install_shell() {
   fi
   run_command "cp -rf .zshrc ~/"
   run_command "exec zsh"
+
 }
 
 install_shell
