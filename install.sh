@@ -62,10 +62,10 @@ select_option() {
 #Install basic depenedencies
 install_dependencies() {
   run_command "sudo apt-get update"
+  run_command "sudo apt install lsd"
   run_command "sudo apt-get install -y build-essential curl file git"
   run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
   run_command ". $HOME/.cargo/env"
-  run_command "apt install lsd"
 }
 
 print_header "🛠️ Installing dependencies"
