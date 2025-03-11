@@ -16,7 +16,7 @@ RESET="\e[0m"
 
 # 🔗 Variables
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim" "atuin")
+PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
 
@@ -154,6 +154,9 @@ install_shell() {
   run_command "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
   #install LSD
   run_command "sudo apt install lsd"
+  #install atuin
+  run_command "curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh"
+
   mkdir -p ~/.cache/carapace
   mkdir -p ~/.local/share/atuin
 
