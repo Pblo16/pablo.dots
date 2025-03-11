@@ -16,7 +16,7 @@ RESET="\e[0m"
 
 # 🔗 Variables
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-PACKAGES=("fnm" "pnpm" "neovim" "jandedobbeleer/oh-my-posh/oh-my-posh")
+PACKAGES=("fnm" "pnpm" "neovim" "jandedobbeleer/oh-my-posh/oh-my-posh" "lazygit")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
 
@@ -81,18 +81,6 @@ clone_repository() {
   git clone "$repo_url" "$clone_dir"
 }
 
-# 🔗 Función para crear symlinks
-# create_symlinks() {
-#   print_header "🔗 Creando symlinks"
-#
-#   FILES=(".zshrc" ".tmux.conf")
-#   for file in "${FILES[@]}"; do
-#     ln -sf "$CONFIG_DIR/$file" "$HOME/$file"
-#     success_msg "Symlink creado: $HOME/$file → $CONFIG_DIR/$file"
-#   done
-# }
-
-# 🚀 Ejecutar funciones
 # Step 1: Clone the repository
 echo -e "${YELLOW}Step 1: Clone the Repository${NC}"
 if [ -d "pablo.dots" ]; then
@@ -162,10 +150,55 @@ install_shell() {
 
   run_command "cp -rf .zshrc ~/"
 
+  echo -e "${YELLOW}Configuring Tmux...${NC}"
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    run_command "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
+  else
+    echo -e "${GREEN}Tmux Plugin Manager is already installed.${NC}"
+  fi
+
+  run_command "mkdir -p ~/.tmux"
+  run_command "cp -r .tmux/* ~/.tmux/"
+  run_command "cp -rf .tmux.conf ~/"
+  SESSION_NAME="plugin-installation"
+
+  # Check if session already exists and kill it if necessary
+  if tmux has-session -t $SESSION_NAME 2>/dev/null; then
+    echo -e "${YELLOW}Session $SESSION_NAME already exists. Killing it...${NC}"
+    tmux kill-session -t $SESSION_NAME
+  fi
+
+  # Create a new session in detached mode with the specified name
+  tmux new-session -d -s $SESSION_NAME 'source ~/.tmux.conf; tmux run-shell ~/.tmux/plugins/tpm/bin/install_plugins'
+
+  # Wait for a few seconds to ensure the installation completes
+  while tmux has-session -t $SESSION_NAME 2>/dev/null; do
+    sleep 1
+  done
+
+  # Ensure the tmux session is killed
+  if tmux has-session -t $SESSION_NAME 2>/dev/null; then
+    tmux kill-session -t $SESSION_NAME
+  fi
 }
 
 install_shell
-# create_symlinks
+
+#Step: install lazyvim
+install_lazyvim() {
+  echo -e "${YELLOW}Configuring Neovim...${NC}"
+  run_command "mkdir -p ~/.config/nvim"
+  run_command "cp -rf .config/nvim/* ~/.config/nvim/"
+  run_command "nvim +PackerSync"
+}
+
+# Clean up: Remove the cloned repository
+sudo chown -R $(whoami) $(brew --prefix)/*
+echo -e "${YELLOW}Cleaning up...${NC}"
+cd ..
+run_command "rm -rf pablo.dots"
+
+set_as_default_shell "zsh"
 
 echo -e "${BOLD}${GREEN}🎉 Instalación completada con éxito.${RESET}"
 exec zsh
