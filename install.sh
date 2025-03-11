@@ -40,7 +40,7 @@ error_msg() {
 # Function to run commands with optional suppression of output
 run_command() {
   local command=$1
-  eval $command &>/dev/null
+  eval $command
 }
 
 # Function to prompt user for input with a select menu
@@ -67,7 +67,7 @@ install_dependencies() {
   run_command ". $HOME/.cargo/env"
 }
 
-echo -e "${YELLOW} Installing dependencies"
+print_header "🛠️ Installing dependencies"
 install_dependencies
 
 # Function to clone a repository with progress
