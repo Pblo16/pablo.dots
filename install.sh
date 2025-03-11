@@ -93,104 +93,90 @@ cd pablo.dots || exit
 # Step 2: Install Homebrew
 echo -e "${YELLOW}Step 2: Install Homebrew"
 
-install_homebrew() {
-  print_header "🛠️ Instalando Homebrew"
+print_header "🛠️ Instalando Homebrew"
 
-  if ! command -v brew &>/dev/null; then
-    echo "Descargando e instalando Homebrew..."
-    /bin/bash -c "$(curl -fsSL $BREW_URL)"
-    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.bashrc
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    success_msg "Homebrew instalado correctamente."
+if ! command -v brew &>/dev/null; then
+  echo "Descargando e instalando Homebrew..."
+  /bin/bash -c "$(curl -fsSL $BREW_URL)"
+  echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.bashrc
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  success_msg "Homebrew instalado correctamente."
 
-    run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.zshrc)"
-    run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.bashrc)"
-    run_command "mkdir -p ~/.config/fish"
-    run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.config/fish/config.fish)"
-    run_command "eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\""
-  else
-    success_msg "Homebrew ya está instalado."
-  fi
-}
-
-install_homebrew
+  run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.zshrc)"
+  run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.bashrc)"
+  run_command "mkdir -p ~/.config/fish"
+  run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.config/fish/config.fish)"
+  run_command "eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\""
+else
+  success_msg "Homebrew ya está instalado."
+fi
 
 # Step 3: Install Dependencies
 echo -e "${YELLOW}Step 3: Dependencies"
-install_packages() {
-  print_header "📦 Instalando paquetes con Homebrew"
+print_header "📦 Instalando paquetes con Homebrew"
 
-  for pkg in "${PACKAGES[@]}"; do
-    echo -ne "${YELLOW}Instalando $pkg...${RESET}"
-    if brew list "$pkg" &>/dev/null; then
-      echo -e " ${GREEN}[Ya instalado]${RESET}"
-    else
-      brew install "$pkg" &>/dev/null && success_msg "$pkg instalado."
-    fi
-  done
-}
-
-install_packages
+for pkg in "${PACKAGES[@]}"; do
+  echo -ne "${YELLOW}Instalando $pkg...${RESET}"
+  if brew list "$pkg" &>/dev/null; then
+    echo -e " ${GREEN}[Ya instalado]${RESET}"
+  else
+    brew install "$pkg" &>/dev/null && success_msg "$pkg instalado."
+  fi
+done
 
 #Step 4: Install Shell
 echo -e "${YELLOW}Step 4: Install Shell"
 
-install_shell() {
-  echo -e "${YELLOW}Configuring Zsh...${NC}"
-  run_command "sudo apt install zsh -y"
-  #install zoxide
-  run_command "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
-  #install LSD
-  run_command "sudo apt install lsd -y"
-  #install atuin
-  run_command "curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh"
+echo -e "${YELLOW}Configuring Zsh...${NC}"
+run_command "sudo apt install zsh -y"
+#install zoxide
+run_command "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
+#install LSD
+run_command "sudo apt install lsd -y"
+#install atuin
+run_command "curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh"
 
-  mkdir -p ~/.cache/carapace
-  mkdir -p ~/.local/share/atuin
+mkdir -p ~/.cache/carapace
+mkdir -p ~/.local/share/atuin
 
-  run_command "cp -rf .zshrc ~/"
+run_command "cp -rf .zshrc ~/"
 
-  echo -e "${YELLOW}Configuring Tmux...${NC}"
-  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    run_command "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
-  else
-    echo -e "${GREEN}Tmux Plugin Manager is already installed.${NC}"
-  fi
+echo -e "${YELLOW}Configuring Tmux...${NC}"
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+  run_command "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
+else
+  echo -e "${GREEN}Tmux Plugin Manager is already installed.${NC}"
+fi
 
-  run_command "mkdir -p ~/.tmux"
-  run_command "cp -r .tmux/* ~/.tmux/"
-  run_command "cp -rf .tmux.conf ~/"
-  SESSION_NAME="plugin-installation"
+run_command "mkdir -p ~/.tmux"
+run_command "cp -r .tmux/* ~/.tmux/"
+run_command "cp -rf .tmux.conf ~/"
+SESSION_NAME="plugin-installation"
 
-  # Check if session already exists and kill it if necessary
-  if tmux has-session -t $SESSION_NAME 2>/dev/null; then
-    echo -e "${YELLOW}Session $SESSION_NAME already exists. Killing it...${NC}"
-    tmux kill-session -t $SESSION_NAME
-  fi
+# Check if session already exists and kill it if necessary
+if tmux has-session -t $SESSION_NAME 2>/dev/null; then
+  echo -e "${YELLOW}Session $SESSION_NAME already exists. Killing it...${NC}"
+  tmux kill-session -t $SESSION_NAME
+fi
 
-  # Create a new session in detached mode with the specified name
-  tmux new-session -d -s $SESSION_NAME 'source ~/.tmux.conf; tmux run-shell ~/.tmux/plugins/tpm/bin/install_plugins'
+# Create a new session in detached mode with the specified name
+tmux new-session -d -s $SESSION_NAME 'source ~/.tmux.conf; tmux run-shell ~/.tmux/plugins/tpm/bin/install_plugins'
 
-  # Wait for a few seconds to ensure the installation completes
-  while tmux has-session -t $SESSION_NAME 2>/dev/null; do
-    sleep 1
-  done
+# Wait for a few seconds to ensure the installation completes
+while tmux has-session -t $SESSION_NAME 2>/dev/null; do
+  sleep 1
+done
 
-  # Ensure the tmux session is killed
-  if tmux has-session -t $SESSION_NAME 2>/dev/null; then
-    tmux kill-session -t $SESSION_NAME
-  fi
-}
-
-install_shell
+# Ensure the tmux session is killed
+if tmux has-session -t $SESSION_NAME 2>/dev/null; then
+  tmux kill-session -t $SESSION_NAME
+fi
 
 #Step: install lazyvim
-install_lazyvim() {
-  echo -e "${YELLOW}Configuring Neovim...${NC}"
-  run_command "mkdir -p ~/.config/nvim"
-  run_command "cp -rf .config/nvim/* ~/.config/nvim/"
-  run_command "nvim +PackerSync"
-}
+echo -e "${YELLOW}Configuring Neovim...${NC}"
+run_command "mkdir -p ~/.config/nvim"
+run_command "cp -rf .config/nvim/* ~/.config/nvim/"
+run_command "nvim +PackerSync"
 
 # Clean up: Remove the cloned repository
 sudo chown -R $(whoami) $(brew --prefix)/*
