@@ -16,7 +16,7 @@ RESET="\e[0m"
 
 # 🔗 Variables
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-PACKAGES=("fnm" "pnpm" "zsh" "tmux" "neovim")
+PACKAGES=("fnm" "pnpm" "tmux" "neovim")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
 
@@ -149,7 +149,7 @@ echo -e "${YELLOW}Step 4: Install Shell"
 
 install_shell() {
   echo -e "${YELLOW}Configuring Zsh...${NC}"
-
+  run_command "sudo apt install zsh"
   #install zoxide
   run_command "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
   #install LSD
