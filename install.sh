@@ -67,6 +67,8 @@ install_dependencies() {
   run_command ". $HOME/.cargo/env"
 }
 
+install_dependencies
+
 # Function to clone a repository with progress
 clone_repository() {
   local repo_url="$1"
