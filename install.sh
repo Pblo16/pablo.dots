@@ -151,8 +151,8 @@ fi
 
 run_command "mkdir -p ~/.tmux"
 run_command "pwd"
-run_command "cp -r /.tmux/* ~/.tmux/"
-run_command "cp -rf .tmux.conf ~/"
+run_command "cp -r .tmux/* ~/.tmux/"
+run_command "cp .tmux.conf ~/"
 SESSION_NAME="plugin-installation"
 
 # Check if session already exists and kill it if necessary
