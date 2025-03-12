@@ -87,7 +87,7 @@ if [ -d "pablo.dots" ]; then
   echo -e "${GREEN}Repository already cloned. Overwriting...${NC}"
   rm -rf "pablo.dots"
 fi
-clone_repository "https://github.com/Pblo16/pablo.dots.git" "pablo.dots" 20
+clone_repository "--branch testing https://github.com/Pblo16/pablo.dots.git" "pablo.dots" 20
 
 cd pablo.dots || exit
 
@@ -151,8 +151,8 @@ fi
 
 run_command "mkdir -p ~/.tmux"
 run_command "pwd"
-run_command "cp -r /.tmux/* ~/.tmux/"
-run_command "cp -rf .tmux.conf ~/"
+run_command "cp -r .tmux/* ~/.tmux/"
+run_command "cp .tmux.conf ~/"
 SESSION_NAME="plugin-installation"
 
 # Check if session already exists and kill it if necessary
@@ -177,7 +177,7 @@ fi
 #Step: install lazyvim
 echo -e "${YELLOW}Configuring Neovim...${NC}"
 run_command "mkdir -p ~/.config/nvim"
-run_command "cp -rf .config/nvim/* ~/.config/nvim/"
+run_command "cp -rf nvim/* ~/.config/nvim/"
 run_command "nvim +PackerSync"
 
 # Clean up: Remove the cloned repository
