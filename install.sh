@@ -88,6 +88,7 @@ if [ -d "pablo.dots" ]; then
   rm -rf "pablo.dots"
 fi
 clone_repository "https://github.com/Pblo16/pablo.dots.git" "pablo.dots" 20
+
 cd pablo.dots || exit
 
 # Step 2: Install Homebrew
@@ -149,7 +150,8 @@ else
 fi
 
 run_command "mkdir -p ~/.tmux"
-run_command "cp -r .tmux/* ~/.tmux/"
+run_command "pwd"
+run_command "cp -r /.tmux/* ~/.tmux/"
 run_command "cp -rf .tmux.conf ~/"
 SESSION_NAME="plugin-installation"
 
