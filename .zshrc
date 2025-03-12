@@ -1,58 +1,37 @@
-# Personal Zsh configuration file. It is strongly recommended to keep all
-# shell customization and configuration (including exported environment
-# variables such as PATH) in this file or in files sourced from it.
-#
-# Documentation: https://github.com/romkatv/zsh4humans/blob/v5/README.md.
+#=========================================================
+# CONFIGURACIÓN DE ZSH PERSONALIZADA
+#=========================================================
+
+#-----------------------------------------
+# CONFIGURACIÓN BÁSICA DE ZSH
+#-----------------------------------------
 skip_global_compinit=1
 autoload -Uz compinit
 compinit
 
+# Plugins nativos de ZSH
 plugins=(git)
 
-BREW_BIN="/home/linuxbrew/.linuxbrew/bin"
+# Opciones de shell: http://zsh.sourceforge.net/Doc/Release/Options.html
+setopt glob_dots     # No tratar de forma especial los archivos que comienzan con punto
 
+#-----------------------------------------
+# GESTIÓN DEL ENTORNO Y PATH
+#-----------------------------------------
+# Variables de entorno para Homebrew
+BREW_BIN="/home/linuxbrew/.linuxbrew/bin"
+BREW_PREFIX="$(dirname $BREW_BIN)"
+
+# Inicializar Homebrew (solo necesario una vez)
 eval "$($BREW_BIN/brew shellenv)"
 
-
-WM_VAR="/$TMUX"
-# change with ZELLIJ
-WM_CMD="tmux"
-# change with zellij
-
-function start_if_needed() {
-    if [[ $- == *i* ]] && [[ -z "${WM_VAR#/}" ]] && [[ -t 1 ]]; then
-        exec $WM_CMD
-    fi
-}
-
-# Directory listing aliases
-alias ls='lsd'
-alias la='ls -a'
-alias lla='ls -la'
-alias lt='ls --tree'
-
-# Set shell options: http://zsh.sourceforge.net/Doc/Release/Options.html.
-setopt glob_dots     # no special treatment for file names with a leading dot
-setopt no_auto_menu  # require an extra TAB press to open the completion menu
-
-#-----------------------------------------
-# PATH AND ENVIRONMENT CONFIGURATION
-#-----------------------------------------
-# Add paths to PATH variable (consolidated)
+# Configuración de PATH (consolidada)
 export PATH="$HOME/.config/herd-lite/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
-# Initialize Homebrew
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
-# Shell enhancements
-eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/nordtron.omp.json)"
-source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-eval "$(zoxide init zsh)"
-
 #-----------------------------------------
-# PACKAGE MANAGERS
+# GESTORES DE PAQUETES
 #-----------------------------------------
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
@@ -60,36 +39,69 @@ case ":$PATH:" in
   *":$PNPM_HOME:"*) ;;
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
-# pnpm end
 
-# fnm
+# fnm - Fast Node Manager
 FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
   eval "$(XDG_RUNTIME_DIR=/tmp/run/user/$(id -u) fnm env --use-on-cd --shell zsh)"
 fi
 
-
-
-#-----------------------------------------
-# TOOLS AND UTILITIES
-#-----------------------------------------
-# Atuin shell history
-. "$HOME/.atuin/bin/env"
-eval "$(atuin init zsh)"
-
-# Load Angular CLI autocompletion
-source <(ng completion script)
-# Set up fzf key bindings and fuzzy completion
-source <(fzf --zsh)
-source $(dirname $BREW_BIN)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
-source $(dirname $BREW_BIN)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $(dirname $BREW_BIN)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
 # Turso
 export PATH="$PATH:$HOME/.turso"
 
-# Laravel aliases
+#-----------------------------------------
+# GESTOR DE VENTANAS (TMUX/ZELLIJ)
+#-----------------------------------------
+# Variables para el gestor de ventanas (actualmente tmux)
+WM_VAR="/$TMUX"      # Cambiar por ZELLIJ si usas zellij
+WM_CMD="tmux"        # Cambiar por zellij si cambias a ese gestor
+
+# Inicia tmux/zellij automáticamente en sesiones interactivas
+function start_if_needed() {
+    if [[ $- == *i* ]] && [[ -z "${WM_VAR#/}" ]] && [[ -t 1 ]]; then
+        exec $WM_CMD
+    fi
+}
+
+#-----------------------------------------
+# MEJORAS DE COMPLETADO Y VISUALIZACIÓN
+#-----------------------------------------
+# Configuración de FZF y plugins relacionados
+source <(fzf --zsh)
+source $BREW_PREFIX/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source $BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/dots.config/fzf-tab.plugin.zsh
+
+# Configuración de popup para fzf-tab
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+
+# Oh-my-posh para prompt personalizado
+eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/nordtron.omp.json)"
+
+# Zoxide - navegación inteligente entre directorios
+eval "$(zoxide init zsh)"
+
+# Atuin - gestor de historial de shell mejorado
+. "$HOME/.atuin/bin/env"
+eval "$(atuin init zsh)"
+
+#-----------------------------------------
+# ALIAS Y FUNCIONES
+#-----------------------------------------
+# Alias para listado de directorios usando lsd
+alias ls='lsd'
+alias la='ls -a'
+alias lla='ls -la'
+alias lt='ls --tree'
+
+# Alias para Laravel
 alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 alias pint='php $([ -f pint ] && echo pint || echo vendor/bin/pint)'
 
+#-----------------------------------------
+# INICIALIZACIÓN FINAL
+#-----------------------------------------
+# Iniciar gestor de ventanas si es necesario
+start_if_needed
