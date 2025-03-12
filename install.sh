@@ -401,7 +401,7 @@ main() {
   install_homebrew
   install_brew_packages
   install_additional_tools
-  setup_nodejs # Añadida la nueva función aquí
+  # setup_nodejs # Añadida la nueva función aquí
   configure_zsh
   configure_tmux
   configure_neovim
