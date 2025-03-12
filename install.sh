@@ -60,34 +60,18 @@ select_option() {
 }
 
 #Install basic depenedencies
-install_dependencies() {
-  run_command "sudo apt-get update"
-  run_command "sudo apt-get install -y build-essential curl file git"
-  run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
-  run_command ". $HOME/.cargo/env"
-}
 
 print_header "🛠️ Installing dependencies"
-install_dependencies
+run_command "sudo apt-get update"
+run_command "sudo apt-get install -y build-essential curl file git"
+run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
+run_command ". $HOME/.cargo/env"
 
-# Function to clone a repository with progress
-clone_repository() {
-  local repo_url="$1"
-  local clone_dir="$2"
-  local progress_duration=$3
-
-  echo -e "${YELLOW}Cloning repository...${NC}"
-  # Run clone command normally
-  git clone "$repo_url" "$clone_dir"
-}
-
-# Step 1: Clone the repository
 echo -e "${YELLOW}Step 1: Clone the Repository${NC}"
 if [ -d "pablo.dots" ]; then
   echo -e "${GREEN}Repository already cloned. Overwriting...${NC}"
   rm -rf "pablo.dots"
 fi
-clone_repository "--branch testing https://github.com/Pblo16/pablo.dots.git" "pablo.dots" 20
 run_command "git clone -b testing --single-branch https://github.com/Pblo16/pablo.dots.git pablo.dots "
 cd pablo.dots || exit
 
