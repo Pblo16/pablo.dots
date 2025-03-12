@@ -88,7 +88,7 @@ if [ -d "pablo.dots" ]; then
   rm -rf "pablo.dots"
 fi
 clone_repository "--branch testing https://github.com/Pblo16/pablo.dots.git" "pablo.dots" 20
-
+run_command "git clone -b testing --single-branch https://github.com/Pblo16/pablo.dots.git pablo.dots "
 cd pablo.dots || exit
 
 # Step 2: Install Homebrew
