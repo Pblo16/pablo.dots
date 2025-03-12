@@ -16,7 +16,7 @@ RESET="\e[0m"
 
 # 🔗 Variables
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-PACKAGES=("fnm" "pnpm" "neovim" "jandedobbeleer/oh-my-posh/oh-my-posh" "lazygit")
+PACKAGES=("fnm" "pnpm" "neovim" "jandedobbeleer/oh-my-posh/oh-my-posh" "lazygit" "carapace")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
 
@@ -162,13 +162,37 @@ fi
 echo -e "${YELLOW}Configuring Neovim...${NC}"
 run_command "mkdir -p ~/.config/nvim"
 run_command "cp -rf nvim/* ~/.config/nvim/"
-run_command "nvim +PackerSync"
 
 # Clean up: Remove the cloned repository
 sudo chown -R $(whoami) $(brew --prefix)/*
 echo -e "${YELLOW}Cleaning up...${NC}"
 cd ..
 run_command "rm -rf pablo.dots"
+
+set_as_default_shell() {
+  local name="$1"
+
+  echo -e "${YELLOW}Setting default shell to $name...${NC}"
+  local shell_path
+  shell_path=$(which "$name") # Obtener el camino completo del shell
+
+  if [ -n "$shell_path" ]; then
+    sudo sh -c "grep -Fxq \"$shell_path\" /etc/shells || echo \"$shell_path\" >> /etc/shells"
+
+    sudo chsh -s "$shell_path" "$USER"
+
+    if [ "$SHELL" != "$shell_path" ]; then
+      echo -e "${RED}Error: Shell did not change. Please check manually.${NC}"
+      echo -e "${GREEN}Command: sudo chsh -s $shell_path \$USER ${NC}"
+    else
+      echo -e "${GREEN}Shell changed to $shell_path successfully.${NC}"
+    fi
+  else
+    echo -e "${RED}Shell $name not found.${NC}"
+  fi
+}
+
+run_command "brew install zsh-autosuggestions zsh-syntax-highlighting zsh-autocomplete"
 
 set_as_default_shell "zsh"
 

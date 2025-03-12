@@ -7,8 +7,21 @@ skip_global_compinit=1
 autoload -Uz compinit
 compinit
 
-
 plugins=(git)
+source $(dirname $BREW_BIN)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source $(dirname $BREW_BIN)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $(dirname $BREW_BIN)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+WM_VAR="/$TMUX"
+# change with ZELLIJ
+WM_CMD="tmux"
+# change with zellij
+
+function start_if_needed() {
+    if [[ $- == *i* ]] && [[ -z "${WM_VAR#/}" ]] && [[ -t 1 ]]; then
+        exec $WM_CMD
+    fi
+}
 
 # Directory listing aliases
 alias ls='lsd'
