@@ -1,8 +1,13 @@
 #!/bin/bash
 
-set -e # Detener el script si hay un error
+# Detener el script si hay un error
+set -e
 
-# 🎨 Colores
+# =====================================================
+# 🎨 CONFIGURACIÓN Y VARIABLES
+# =====================================================
+
+# Colores para formatear la salida
 PINK=$(tput setaf 204)
 PURPLE=$(tput setaf 141)
 GREEN=$(tput setaf 114)
@@ -14,36 +19,100 @@ NC=$(tput sgr0) # No Color
 BOLD="\e[1m"
 RESET="\e[0m"
 
-# 🔗 Variables
+# URLs y configuración
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-PACKAGES=("fnm" "pnpm" "neovim" "fzf" "jandedobbeleer/oh-my-posh/oh-my-posh" "lazygit" "carapace")
-CONFIG_DIR="$HOME/.dotfiles"
-DEST_DIR="$HOME"
+REPO_URL="https://github.com/Pblo16/pablo.dots.git"
+REPO_BRANCH="testing"
+REPO_DIR="pablo.dots"
+ZOXIDE_URL="https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh"
+ATUIN_URL="https://setup.atuin.sh"
 
-# 🏷️ Función para imprimir encabezados
+# Paquetes
+BREW_PACKAGES=(
+  "fnm"
+  "pnpm"
+  "neovim"
+  "fzf"
+  "jandedobbeleer/oh-my-posh/oh-my-posh"
+  "lazygit"
+  "zsh-autosuggestions"
+  "zsh-syntax-highlighting"
+  "zsh-autocomplete"
+)
+
+APT_PACKAGES=(
+  "build-essential"
+  "curl"
+  "file"
+  "git"
+  "zsh"
+  "lsd"
+)
+
+# Directorios
+CONFIG_DIR="$HOME/.config"
+NVIM_CONFIG_DIR="$CONFIG_DIR/nvim"
+TMUX_CONFIG_DIR="$HOME/.tmux"
+TMUX_SESSION_NAME="plugin-installation"
+
+# =====================================================
+# 🛠️ FUNCIONES AUXILIARES
+# =====================================================
+
+# Función para imprimir encabezados
 print_header() {
   echo -e "${BLUE}=================================================${RESET}"
   echo -e "${BOLD}${GREEN}$1${RESET}"
   echo -e "${BLUE}=================================================${RESET}"
 }
 
-# ✅ Función para imprimir mensajes de éxito
+# Función para imprimir mensajes de éxito
 success_msg() {
-  echo -e "${GREEN}✔ $1${RESET}"
+  echo -e "${GREEN}✅ $1${RESET}"
 }
 
-# ❌ Función para imprimir errores
+# Función para imprimir mensajes informativos
+info_msg() {
+  echo -e "${YELLOW}ℹ️ $1${RESET}"
+}
+
+# Función para imprimir errores
 error_msg() {
-  echo -e "${RED}✖ $1${RESET}"
+  echo -e "${RED}❌ $1${RESET}"
 }
 
-# Function to run commands with optional suppression of output
+# Función para ejecutar comandos
 run_command() {
-  local command=$1
-  eval $command
+  local command="$1"
+  local hide_output="${2:-false}"
+  local error_message="${3:-Error al ejecutar: $command}"
+
+  info_msg "Ejecutando: $command"
+
+  if [ "$hide_output" = "true" ]; then
+    if eval "$command" &>/dev/null; then
+      success_msg "Comando ejecutado con éxito"
+    else
+      error_msg "$error_message"
+      exit 1
+    fi
+  else
+    if eval "$command"; then
+      success_msg "Comando ejecutado con éxito"
+    else
+      error_msg "$error_message"
+      exit 1
+    fi
+  fi
 }
 
-# Function to prompt user for input with a select menu
+# Función para verificar si un paquete está instalado
+is_installed() {
+  local pkg="$1"
+  command -v "$pkg" &>/dev/null
+}
+
+# Función para seleccionar opciones
 select_option() {
   local prompt_message="$1"
   shift
@@ -54,147 +123,270 @@ select_option() {
       echo "$opt"
       break
     else
-      echo -e "${RED}Invalid option. Please try again.${NC}"
+      error_msg "Opción inválida. Inténtalo de nuevo."
     fi
   done
 }
 
-#Install basic depenedencies
+# =====================================================
+# 📋 FUNCIONES DE INSTALACIÓN
+# =====================================================
 
-print_header "🛠️ Installing dependencies"
-run_command "sudo apt-get update"
-run_command "sudo apt-get install -y build-essential curl file git"
-run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh"
-run_command ". $HOME/.cargo/env"
+# Verificar y crear directorios necesarios
+setup_directories() {
+  print_header "📁 Configurando directorios"
 
-echo -e "${YELLOW}Step 1: Clone the Repository${NC}"
-if [ -d "pablo.dots" ]; then
-  echo -e "${GREEN}Repository already cloned. Overwriting...${NC}"
-  rm -rf "pablo.dots"
-fi
-run_command "git clone -b testing --single-branch https://github.com/Pblo16/pablo.dots.git pablo.dots "
-cd pablo.dots || exit
+  mkdir -p "$HOME/.local/share/atuin"
+  mkdir -p "$NVIM_CONFIG_DIR"
+  mkdir -p "$TMUX_CONFIG_DIR"
 
-# Step 2: Install Homebrew
-echo -e "${YELLOW}Step 2: Install Homebrew"
+  success_msg "Directorios creados correctamente"
+}
 
-print_header "🛠️ Instalando Homebrew"
+# Instalar dependencias básicas
+install_basic_dependencies() {
+  print_header "🛠️ Instalando dependencias básicas"
 
-if ! command -v brew &>/dev/null; then
-  echo "Descargando e instalando Homebrew..."
-  /bin/bash -c "$(curl -fsSL $BREW_URL)"
-  echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.bashrc
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  success_msg "Homebrew instalado correctamente."
+  run_command "sudo apt-get update" true
 
-  run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.zshrc)"
-  run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.bashrc)"
-  run_command "mkdir -p ~/.config/fish"
-  run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.config/fish/config.fish)"
-  run_command "eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\""
-else
-  success_msg "Homebrew ya está instalado."
-fi
+  for pkg in "${APT_PACKAGES[@]}"; do
+    if dpkg -l | grep -q "$pkg"; then
+      info_msg "$pkg ya está instalado"
+    else
+      info_msg "Instalando $pkg..."
+      run_command "sudo apt-get install -y $pkg" false "Error al instalar $pkg"
+    fi
+  done
 
-# Step 3: Install Dependencies
-echo -e "${YELLOW}Step 3: Dependencies"
-print_header "📦 Instalando paquetes con Homebrew"
+  success_msg "Dependencias básicas instaladas correctamente"
+}
 
-for pkg in "${PACKAGES[@]}"; do
-  echo -ne "${YELLOW}Instalando $pkg...${RESET}"
-  if brew list "$pkg" &>/dev/null; then
-    echo -e " ${GREEN}[Ya instalado]${RESET}"
+# Instalar Rust
+install_rust() {
+  print_header "🦀 Instalando Rust"
+
+  if is_installed rustc; then
+    info_msg "Rust ya está instalado"
   else
-    brew install "$pkg" &>/dev/null && success_msg "$pkg instalado."
+    run_command "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y" false
+    run_command "source $HOME/.cargo/env"
   fi
-done
 
-#Step 4: Install Shell
-echo -e "${YELLOW}Step 4: Install Shell"
+  success_msg "Rust instalado correctamente"
+}
 
-echo -e "${YELLOW}Configuring Zsh...${NC}"
-run_command "sudo apt install zsh -y"
-#install zoxide
-run_command "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
-#install LSD
-run_command "sudo apt install lsd -y"
-#install atuin
-run_command "curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh"
+# Clonar repositorio de dotfiles
+clone_dotfiles_repo() {
+  print_header "📦 Clonando repositorio de dotfiles"
 
-mkdir -p ~/.cache/carapace
-mkdir -p ~/.local/share/atuin
+  # Guardar directorio actual
+  local current_dir=$(pwd)
 
-run_command "cp -rf .zshrc ~/"
+  # Verificar si el repositorio ya existe
+  if [ -d "$REPO_DIR" ]; then
+    info_msg "Repositorio ya clonado. Actualizando..."
+    run_command "cd $REPO_DIR && git pull" false
+  else
+    run_command "git clone -b $REPO_BRANCH --single-branch $REPO_URL $REPO_DIR" false
+  fi
 
-echo -e "${YELLOW}Configuring Tmux...${NC}"
-if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-  run_command "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm"
-else
-  echo -e "${GREEN}Tmux Plugin Manager is already installed.${NC}"
-fi
+  # Cambiar al directorio del repositorio
+  cd "$REPO_DIR" || exit 1
 
-run_command "mkdir -p ~/.tmux"
-run_command "pwd"
-run_command "cp -r .tmux/* ~/.tmux/"
-run_command "cp .tmux.conf ~/"
-SESSION_NAME="plugin-installation"
+  success_msg "Repositorio clonado/actualizado correctamente"
+}
 
-# Check if session already exists and kill it if necessary
-if tmux has-session -t $SESSION_NAME 2>/dev/null; then
-  echo -e "${YELLOW}Session $SESSION_NAME already exists. Killing it...${NC}"
-  tmux kill-session -t $SESSION_NAME
-fi
+# Instalar Homebrew
+install_homebrew() {
+  print_header "🍺 Instalando Homebrew"
 
-# Create a new session in detached mode with the specified name
-tmux new-session -d -s $SESSION_NAME 'source ~/.tmux.conf; tmux run-shell ~/.tmux/plugins/tpm/bin/install_plugins'
+  if is_installed brew; then
+    info_msg "Homebrew ya está instalado"
+  else
+    info_msg "Descargando e instalando Homebrew..."
+    run_command "/bin/bash -c \"$(curl -fsSL $BREW_URL)\"" false
 
-# Wait for a few seconds to ensure the installation completes
-while tmux has-session -t $SESSION_NAME 2>/dev/null; do
-  sleep 1
-done
+    # Configurar Homebrew en shells
+    run_command "echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> $HOME/.zshrc" true
+    run_command "echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> $HOME/.bashrc" true
+    run_command "echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> $HOME/.config/fish/config.fish" true
+    run_command "eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"" true
+  fi
 
-# Ensure the tmux session is killed
-if tmux has-session -t $SESSION_NAME 2>/dev/null; then
-  tmux kill-session -t $SESSION_NAME
-fi
+  success_msg "Homebrew configurado correctamente"
+}
 
-#Step: install lazyvim
-echo -e "${YELLOW}Configuring Neovim...${NC}"
-run_command "mkdir -p ~/.config/nvim"
-run_command "cp -rf nvim/* ~/.config/nvim/"
+# Instalar paquetes de Homebrew
+install_brew_packages() {
+  print_header "📦 Instalando paquetes con Homebrew"
 
-# Clean up: Remove the cloned repository
-sudo chown -R $(whoami) $(brew --prefix)/*
-echo -e "${YELLOW}Cleaning up...${NC}"
-cd ..
-run_command "rm -rf pablo.dots"
+  for pkg in "${BREW_PACKAGES[@]}"; do
+    echo -ne "${YELLOW}Instalando $pkg...${RESET}"
+    if brew list "$pkg" &>/dev/null; then
+      echo -e " ${GREEN}[Ya instalado]${RESET}"
+    else
+      brew install "$pkg" &>/dev/null && success_msg "$pkg instalado."
+    fi
+  done
 
-set_as_default_shell() {
-  local name="$1"
+  success_msg "Paquetes de Homebrew instalados correctamente"
+}
 
-  echo -e "${YELLOW}Setting default shell to $name...${NC}"
+# Instalar y configurar herramientas adicionales
+install_additional_tools() {
+  print_header "🔧 Instalando herramientas adicionales"
+
+  # Instalar zoxide
+  if ! is_installed zoxide; then
+    info_msg "Instalando zoxide..."
+    run_command "curl -sSfL $ZOXIDE_URL | sh" false
+  else
+    info_msg "zoxide ya está instalado"
+  fi
+
+  # Instalar atuin
+  if ! is_installed atuin; then
+    info_msg "Instalando atuin..."
+    run_command "curl --proto '=https' --tlsv1.2 -LsSf $ATUIN_URL | sh" false
+  else
+    info_msg "atuin ya está instalado"
+  fi
+
+  success_msg "Herramientas adicionales instaladas correctamente"
+}
+
+# Configurar Zsh
+configure_zsh() {
+  print_header "🐚 Configurando Zsh"
+
+  # Copiar archivo de configuración de Zsh
+  run_command "cp -rf .zshrc $HOME/" false
+
+  success_msg "Zsh configurado correctamente"
+}
+
+# Configurar Tmux
+configure_tmux() {
+  print_header "📟 Configurando Tmux"
+
+  # Instalar Tmux Plugin Manager (TPM) si no existe
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    run_command "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" false
+  else
+    info_msg "Tmux Plugin Manager ya está instalado"
+  fi
+
+  # Copiar configuración de Tmux
+  run_command "cp -r .tmux/* $TMUX_CONFIG_DIR/" false
+  run_command "cp .tmux.conf $HOME/" false
+
+  # Instalar plugins de Tmux
+  info_msg "Instalando plugins de Tmux..."
+
+  # Matar sesión anterior si existe
+  if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
+    run_command "tmux kill-session -t $TMUX_SESSION_NAME" true
+  fi
+
+  # Crear una nueva sesión de tmux e instalar plugins
+  run_command "tmux new-session -d -s $TMUX_SESSION_NAME 'source ~/.tmux.conf; tmux run-shell ~/.tmux/plugins/tpm/bin/install_plugins'" false
+
+  # Esperar a que termine la instalación
+  info_msg "Esperando a que finalice la instalación de plugins de Tmux..."
+  sleep 5
+
+  # Matar la sesión
+  if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
+    run_command "tmux kill-session -t $TMUX_SESSION_NAME" true
+  fi
+
+  success_msg "Tmux configurado correctamente"
+}
+
+# Configurar Neovim
+configure_neovim() {
+  print_header "📝 Configurando Neovim"
+
+  # Copiar configuración de Neovim
+  run_command "cp -rf nvim/* $NVIM_CONFIG_DIR/" false
+
+  success_msg "Neovim configurado correctamente"
+}
+
+# Establecer shell por defecto
+set_default_shell() {
+  print_header "🐚 Estableciendo shell por defecto"
+
+  local shell_name="zsh"
   local shell_path
-  shell_path=$(which "$name") # Obtener el camino completo del shell
+  shell_path=$(which "$shell_name")
 
   if [ -n "$shell_path" ]; then
-    sudo sh -c "grep -Fxq \"$shell_path\" /etc/shells || echo \"$shell_path\" >> /etc/shells"
+    # Añadir shell a /etc/shells si no existe
+    run_command "grep -Fxq \"$shell_path\" /etc/shells || sudo sh -c \"echo $shell_path >> /etc/shells\"" true
 
-    sudo chsh -s "$shell_path" "$USER"
+    # Cambiar shell por defecto
+    run_command "sudo chsh -s $shell_path $USER" false
 
     if [ "$SHELL" != "$shell_path" ]; then
-      echo -e "${RED}Error: Shell did not change. Please check manually.${NC}"
-      echo -e "${GREEN}Command: sudo chsh -s $shell_path \$USER ${NC}"
+      info_msg "Es posible que necesites reiniciar para que los cambios surtan efecto"
+      info_msg "Comando para cambiar shell manualmente: sudo chsh -s $shell_path \$USER"
     else
-      echo -e "${GREEN}Shell changed to $shell_path successfully.${NC}"
+      success_msg "Shell cambiado a $shell_path correctamente"
     fi
   else
-    echo -e "${RED}Shell $name not found.${NC}"
+    error_msg "Shell $shell_name no encontrado"
   fi
 }
 
-run_command "brew install zsh-autosuggestions zsh-syntax-highlighting zsh-autocomplete"
+# Limpiar después de la instalación
+cleanup() {
+  print_header "🧹 Limpiando"
 
-set_as_default_shell "zsh"
+  # Asegurar permisos correctos para Homebrew
+  run_command "sudo chown -R $(whoami) $(brew --prefix)/*" false
 
-echo -e "${BOLD}${GREEN}🎉 Instalación completada con éxito.${RESET}"
-exec zsh
+  # Volver al directorio original y eliminar el repositorio clonado
+  cd ..
+  run_command "rm -rf $REPO_DIR" false
+
+  success_msg "Limpieza completada"
+}
+
+# =====================================================
+# 🚀 FUNCIÓN PRINCIPAL
+# =====================================================
+
+main() {
+  print_header "🚀 Iniciando instalación de dotfiles"
+
+  # Verificar si se ejecuta como root
+  if [ "$(id -u)" -eq 0 ]; then
+    error_msg "Este script no debe ser ejecutado como root"
+    exit 1
+  fi
+
+  # Ejecutar los pasos de instalación
+  setup_directories
+  install_basic_dependencies
+  install_rust
+  clone_dotfiles_repo
+  install_homebrew
+  install_brew_packages
+  install_additional_tools
+  configure_zsh
+  configure_tmux
+  configure_neovim
+  set_default_shell
+  cleanup
+
+  print_header "🎉 ¡Instalación completada con éxito!"
+  echo -e "${BOLD}${GREEN}Para aplicar todos los cambios, cierre y vuelva a abrir su terminal${RESET}"
+  echo -e "${BOLD}${GREEN}O ejecute: exec zsh${RESET}"
+
+  # Iniciar nueva sesión de zsh
+  exec zsh
+}
+
+# Ejecutar función principal
+main
