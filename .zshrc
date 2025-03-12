@@ -8,6 +8,12 @@ autoload -Uz compinit
 compinit
 
 plugins=(git)
+
+
+BREW_BIN="/home/linuxbrew/.linuxbrew/bin"
+
+eval "$($BREW_BIN/brew shellenv)"
+
 source $(dirname $BREW_BIN)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 source $(dirname $BREW_BIN)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $(dirname $BREW_BIN)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
