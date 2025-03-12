@@ -9,14 +9,10 @@ compinit
 
 plugins=(git)
 
-
 BREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 
 eval "$($BREW_BIN/brew shellenv)"
 
-source $(dirname $BREW_BIN)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
-source $(dirname $BREW_BIN)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $(dirname $BREW_BIN)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 WM_VAR="/$TMUX"
 # change with ZELLIJ
@@ -84,6 +80,11 @@ eval "$(atuin init zsh)"
 
 # Load Angular CLI autocompletion
 source <(ng completion script)
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
+source $(dirname $BREW_BIN)/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source $(dirname $BREW_BIN)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $(dirname $BREW_BIN)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Turso
 export PATH="$PATH:$HOME/.turso"

@@ -16,7 +16,7 @@ RESET="\e[0m"
 
 # 🔗 Variables
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
-PACKAGES=("fnm" "pnpm" "neovim" "jandedobbeleer/oh-my-posh/oh-my-posh" "lazygit" "carapace")
+PACKAGES=("fnm" "pnpm" "neovim" "fzf" "jandedobbeleer/oh-my-posh/oh-my-posh" "lazygit" "carapace")
 CONFIG_DIR="$HOME/.dotfiles"
 DEST_DIR="$HOME"
 
