@@ -200,20 +200,20 @@ clone_dotfiles_repo() {
 install_homebrew() {
   print_header "🍺 Instalando Homebrew"
   
-  if is_installed brew; then
-    info_msg "Homebrew ya está instalado"
+   print_header "🍺 Instalando Homebrew"
+
+  if ! command -v brew &>/dev/null; then
+    /bin/bash -c "$(curl -fsSL $BREW_URL)"
+    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.bashrc
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+    run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.zshrc)"
+    run_command "(echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> ~/.bashrc)"
+    run_command "eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\""
+    success_msg "Homebrew instalado correctamente."
   else
-    info_msg "Descargando e instalando Homebrew..."
-    run_command "/bin/bash -c \"$(curl -fsSL $BREW_URL)\"" false
-    
-    # Configurar Homebrew en shells
-    run_command "echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> $HOME/.zshrc" true
-    run_command "echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> $HOME/.bashrc" true
-    run_command "echo 'eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"' >> $HOME/.config/fish/config.fish" true
-    run_command "eval \"\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\"" true
+    success_msg "Homebrew ya está instalado."
   fi
-  
-  success_msg "Homebrew configurado correctamente"
 }
 
 # Instalar paquetes de Homebrew
