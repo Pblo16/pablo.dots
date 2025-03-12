@@ -177,7 +177,7 @@ fi
 #Step: install lazyvim
 echo -e "${YELLOW}Configuring Neovim...${NC}"
 run_command "mkdir -p ~/.config/nvim"
-run_command "cp -rf .config/nvim/* ~/.config/nvim/"
+run_command "cp -rf nvim/* ~/.config/nvim/"
 run_command "nvim +PackerSync"
 
 # Clean up: Remove the cloned repository
