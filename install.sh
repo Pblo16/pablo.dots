@@ -33,6 +33,7 @@ BREW_PACKAGES=(
   "pnpm"
   "neovim"
   "fzf"
+  "ripgrep"
   "jandedobbeleer/oh-my-posh/oh-my-posh"
   "lazygit"
   "zsh-autosuggestions"
