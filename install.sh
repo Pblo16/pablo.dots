@@ -33,6 +33,7 @@ BREW_PACKAGES=(
   "pnpm"
   "neovim"
   "fzf"
+  "gh"
   "ripgrep"
   "jandedobbeleer/oh-my-posh/oh-my-posh"
   "lazygit"
@@ -401,13 +402,11 @@ main() {
   install_homebrew
   install_brew_packages
   install_additional_tools
-  # setup_nodejs
   configure_zsh
   configure_tmux
   configure_neovim
   set_default_shell
   cleanup
-
   print_header "🎉 ¡Instalación completada con éxito!"
   echo -e "${BOLD}${GREEN}Para aplicar todos los cambios, cierre y vuelva a abrir su terminal${RESET}"
   echo -e "${BOLD}${GREEN}O ejecute: exec zsh${RESET}"
@@ -418,6 +417,8 @@ main() {
     sleep 1
     # Usar esta técnica para asegurar que exec zsh se ejecute como el último comando
     exec zsh -l
+    setup_nodejs
+
   else
     echo -e "\n${RED}zsh no está disponible. Por favor instálelo e inicie una nueva sesión.${RESET}"
   fi
