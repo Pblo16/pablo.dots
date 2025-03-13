@@ -285,10 +285,9 @@ setup_nodejs() {
 # Configurar Zsh
 configure_zsh() {
   print_header "🐚 Configurando Zsh"
-
   # Copiar archivo de configuración de Zsh
   run_command "cp -rf .zshrc $HOME/" false
-
+  run_command "git clone https://github.com/Aloxaf/fzf-tab ~/dots.config/fzf-tab.plugin.zsh"
   success_msg "Zsh configurado correctamente"
 }
 
