@@ -72,7 +72,7 @@ source <(fzf --zsh)
 source $BREW_PREFIX/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 source $BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/dots.config/fzf-tab.plugin.zsh
+source ~/dots.config/fzf-tab.plugin.zsh/fzf-tab.plugin.zsh
 
 # Configuración de popup para fzf-tab
 zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
