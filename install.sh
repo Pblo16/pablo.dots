@@ -33,8 +33,6 @@ BREW_PACKAGES=(
   "pnpm"
   "neovim"
   "fzf"
-  "gh"
-  "bat"
   "ripgrep"
   "jandedobbeleer/oh-my-posh/oh-my-posh"
   "lazygit"
@@ -55,8 +53,6 @@ APT_PACKAGES=(
 # Directorios
 CONFIG_DIR="$HOME/.config"
 NVIM_CONFIG_DIR="$CONFIG_DIR/nvim"
-TMUX_CONFIG_DIR="$HOME/.tmux"
-TMUX_SESSION_NAME="plugin-installation"
 
 # =====================================================
 # 🛠️ FUNCIONES AUXILIARES
@@ -141,7 +137,6 @@ setup_directories() {
 
   mkdir -p "$HOME/.local/share/atuin"
   mkdir -p "$NVIM_CONFIG_DIR"
-  mkdir -p "$TMUX_CONFIG_DIR"
 
   success_msg "Directorios creados correctamente"
 }
@@ -257,34 +252,6 @@ install_additional_tools() {
   success_msg "Herramientas adicionales instaladas correctamente"
 }
 
-# Configurar Node.js con fnm e instalar paquetes globales
-setup_nodejs() {
-  print_header "📦 Configurando Node.js y paquetes globales"
-
-  # Verificar si fnm está instalado
-  if is_installed fnm; then
-    # Instalar última versión LTS de Node.js
-    info_msg "Instalando última versión LTS de Node.js..."
-    run_command "fnm install --lts" false
-
-    # Establecer como versión por defecto
-    run_command "fnm default lts-latest" true
-
-    # Instalar paquetes globales con pnpm
-    if is_installed pnpm; then
-      info_msg "Instalando paquetes globales con pnpm..."
-      run_command "pnpm add -g @astrojs/language-server" false "Error al instalar @astrojs/language-server"
-      # Aquí puedes añadir más paquetes globales si son necesarios en el futuro
-    else
-      error_msg "pnpm no está instalado. No se pueden instalar los paquetes globales."
-    fi
-  else
-    error_msg "fnm no está instalado. No se puede configurar Node.js."
-  fi
-
-  success_msg "Node.js y paquetes globales configurados correctamente"
-}
-
 # Configurar Zsh
 configure_zsh() {
   print_header "🐚 Configurando Zsh"
@@ -292,44 +259,6 @@ configure_zsh() {
   run_command "cp -rf .zshrc $HOME/" false
   run_command "git clone https://github.com/Aloxaf/fzf-tab ~/dots.config/fzf-tab.plugin.zsh"
   success_msg "Zsh configurado correctamente"
-}
-
-# Configurar Tmux
-configure_tmux() {
-  print_header "📟 Configurando Tmux"
-
-  # Instalar Tmux Plugin Manager (TPM) si no existe
-  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    run_command "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" false
-  else
-    info_msg "Tmux Plugin Manager ya está instalado"
-  fi
-
-  # Copiar configuración de Tmux
-  run_command "cp -r .tmux/* $TMUX_CONFIG_DIR/" false
-  run_command "cp .tmux.conf $HOME/" false
-
-  # Instalar plugins de Tmux
-  info_msg "Instalando plugins de Tmux..."
-
-  # Matar sesión anterior si existe
-  if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
-    run_command "tmux kill-session -t $TMUX_SESSION_NAME" true
-  fi
-
-  # Crear una nueva sesión de tmux e instalar plugins
-  run_command "tmux new-session -d -s $TMUX_SESSION_NAME 'source ~/.tmux.conf; tmux run-shell ~/.tmux/plugins/tpm/bin/install_plugins'" false
-
-  # Esperar a que termine la instalación
-  info_msg "Esperando a que finalice la instalación de plugins de Tmux..."
-  sleep 5
-
-  # Matar la sesión
-  if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
-    run_command "tmux kill-session -t $TMUX_SESSION_NAME" true
-  fi
-
-  success_msg "Tmux configurado correctamente"
 }
 
 # Configurar Neovim
@@ -404,10 +333,10 @@ main() {
   install_brew_packages
   install_additional_tools
   configure_zsh
-  configure_tmux
   configure_neovim
   set_default_shell
   cleanup
+
   print_header "🎉 ¡Instalación completada con éxito!"
   echo -e "${BOLD}${GREEN}Para aplicar todos los cambios, cierre y vuelva a abrir su terminal${RESET}"
   echo -e "${BOLD}${GREEN}O ejecute: exec zsh${RESET}"
@@ -418,8 +347,6 @@ main() {
     sleep 1
     # Usar esta técnica para asegurar que exec zsh se ejecute como el último comando
     exec zsh -l
-    setup_nodejs
-
   else
     echo -e "\n${RED}zsh no está disponible. Por favor instálelo e inicie una nueva sesión.${RESET}"
   fi
