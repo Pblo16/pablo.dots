@@ -15,7 +15,7 @@ Descripción breve del proyecto.
 Instrucciones para instalar el proyecto.
 
 ```bash
-curl -O https://raw.githubusercontent.com/Pblo16/pablo.dots/refs/heads/testing/install.sh
+curl -O https://raw.githubusercontent.com/Pblo16/pablo.dots/refs/heads/main/install.sh
 sudo chmod +x install.sh
 bash install.sh
 ```
