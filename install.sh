@@ -34,6 +34,7 @@ BREW_PACKAGES=(
   "neovim"
   "fzf"
   "gh"
+  "bat"
   "ripgrep"
   "jandedobbeleer/oh-my-posh/oh-my-posh"
   "lazygit"
