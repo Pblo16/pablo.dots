@@ -33,6 +33,7 @@ BREW_PACKAGES=(
   "pnpm"
   "neovim"
   "fzf"
+  "gh"
   "ripgrep"
   "jandedobbeleer/oh-my-posh/oh-my-posh"
   "lazygit"
@@ -48,6 +49,7 @@ APT_PACKAGES=(
   "git"
   "zsh"
   "lsd"
+  "unzip"
 )
 
 # Directorios
@@ -307,7 +309,7 @@ cleanup() {
   # Volver al directorio original y eliminar el repositorio clonado
   cd ..
   run_command "rm -rf $REPO_DIR" false
-
+  run_command "rm -rf install.sh" false
   success_msg "Limpieza completada"
 }
 
