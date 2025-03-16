@@ -17,7 +17,7 @@ config.font_size = 12.0
 -- Terminal color scheme
 config.colors = {
 	foreground = "#fff",
-	background = "#0e0e0e",
+	background = "#000000",
 	cursor_bg = "#97979B",
 	cursor_fg = "#EFF0EB",
 	cursor_border = "#97979B",
@@ -56,7 +56,7 @@ config.window_padding = {
 }
 
 -- Background
-config.window_background_opacity = 0.80 -- Adjust this value as needed
+config.window_background_opacity = 0.70 -- Adjust this value as needed
 -- config.win32_system_backdrop = "Acrylic" -- Only Works in Windows
 
 -- UI
@@ -77,14 +77,5 @@ else
 	wezterm.log_info("No GPUs found, using default settings")
 end
 
-config.keys = {
-	{ key = "s", mods = "CTRL|ALT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
-	{ key = "v", mods = "CTRL|ALT", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
-	{ key = "q", mods = "CTRL|ALT", action = wezterm.action.CloseCurrentPane({ confirm = false }) },
-	{ key = "LeftArrow", mods = "SHIFT", action = wezterm.action.ActivatePaneDirection("Left") },
-	{ key = "RightArrow", mods = "SHIFT", action = wezterm.action.ActivatePaneDirection("Right") },
-	{ key = "UpArrow", mods = "SHIFT", action = wezterm.action.ActivatePaneDirection("Up") },
-	{ key = "DownArrow", mods = "SHIFT", action = wezterm.action.ActivatePaneDirection("Down") },
-}
 -- and finally, return the configuration to wezterm
 return config

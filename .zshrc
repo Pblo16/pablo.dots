@@ -6,9 +6,9 @@
 # CONFIGURACIÓN BÁSICA DE ZSH
 #-----------------------------------------
 skip_global_compinit=1
-autoload -U compinit
+autoload -Uz compinit
 compinit
-
+setopt interactive_comments
 # Plugins nativos de ZSH
 plugins=(git)
 
@@ -57,17 +57,35 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Turso
 export PATH="$PATH:$HOME/.turso"
 
+#-----------------------------------------
+# GESTOR DE VENTANAS (TMUX/ZELLIJ)
+#-----------------------------------------
+# Variables para el gestor de ventanas (actualmente tmux)
+WM_VAR="/$TMUX"     
+WM_CMD="tmux"        
+# Inicia tmux/zellij automáticamente en sesiones interactivas
+function start_if_needed() {
+    # Si está en una sesión interactiva, no hay variable TMUX (no está en tmux) y es un terminal
+    if [[ $- == *i* ]] && [[ -z "$TMUX" ]] && [[ -t 1 ]]; then
+        # Intentar conectarse a sesión existente o crear una nueva si no existe
+        if tmux has-session 2>/dev/null; then
+            exec tmux attach
+        else
+            exec tmux
+        fi
+    fi
+}
 
 #-----------------------------------------
 # MEJORAS DE COMPLETADO Y VISUALIZACIÓN
 #-----------------------------------------
 # Configuración de FZF y plugins relacionados
 source <(fzf --zsh)
-source $BREW_PREFIX/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+# source $BREW_PREFIX/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 source $BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source ~/dots.config/fzf-tab.plugin.zsh/fzf-tab.plugin.zsh
 
+source ~/dots.config/fzf-tab.plugin.zsh/fzf-tab.plugin.zsh
 # Configuración de popup para fzf-tab
 zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
@@ -96,3 +114,7 @@ alias n='nvim .'
 # Alias para Laravel
 alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 alias pint='php $([ -f pint ] && echo pint || echo vendor/bin/pint)'
+
+export XDG_RUNTIME_DIR="$PREFIX/tmp/"
+
+start_if_needed
