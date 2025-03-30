@@ -2,11 +2,10 @@ general:
   # Commands to run when the WM has started. This is useful for running a
   # script or launching another application.
   # Example: The below command launches Zebar.
-  startup_commands: ["shell-exec zebar"]
-
-  # Commands to run just before the WM is shutdown.
-  # Example: The below command kills Zebar.
-  shutdown_commands: ["shell-exec taskkill /IM zebar.exe /F"]
+  startup_commands:
+    [
+      "shell-exec C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Yasb.lnk",
+    ]
 
   # Commands to run after the WM config is reloaded.
   config_reload_commands: []
@@ -44,14 +43,14 @@ gaps:
   scale_with_dpi: true
 
   # Gap between adjacent windows.
-  inner_gap: "5Bpx"
+  inner_gap: "5px"
 
   # Gap between windows and the screen edge.
   outer_gap:
-    top: "40px"
-    right: "5px"
-    bottom: "2px"
-    left: "5px"
+    top: "10px"
+    right: "10px"
+    bottom: "5px"
+    left: "10px"
 
 window_effects:
   # Visual effects to apply to the focused window.
@@ -60,12 +59,12 @@ window_effects:
     # ** Exclusive to Windows 11 due to API limitations.
     border:
       enabled: true
-      color: "#000000"
+      color: "#7ec1e0"
 
     # Remove the title bar from the window's frame. Note that this can
     # cause rendering issues for some applications.
     hide_title_bar:
-      enabled: false
+      enabled: true
 
     # Change the corner style of the window's frame.
     # ** Exclusive to Windows 11 due to API limitations.
@@ -87,7 +86,7 @@ window_effects:
       enabled: true
       color: "#000000"
     hide_title_bar:
-      enabled: false
+      enabled: true
     corner_style:
       enabled: false
       style: "square"
@@ -121,14 +120,27 @@ window_behavior:
 
 workspaces:
   - name: "1"
+    display_name: ""
+    keep_alive: true
   - name: "2"
+    display_name: ""
+    keep_alive: true
   - name: "3"
+    display_name: ""
+    keep_alive: true
   - name: "4"
+    display_name: ""
   - name: "5"
+    display_name: ""
   - name: "6"
+    display_name: ""
   - name: "7"
+    display_name: ""
   - name: "8"
+    display_name: ""
   - name: "9"
+    display_name: ""
+    keep_alive: true
 
 window_rules:
   - commands: ["ignore"]
@@ -139,11 +151,6 @@ window_rules:
       # Ignores picture-in-picture windows for browsers.
       - window_title: { regex: "[Pp]icture.in.[Pp]icture" }
         window_class: { regex: "Chrome_WidgetWin_1|MozillaDialogClass" }
-
-      # Ignore VS Code terminal windows
-      - window_process: { equals: "Code.exe" }
-        window_class: { regex: "^Chrome_WidgetWin_(1|2)$" }
-        window_title: { regex: "zsh " }
 
       # Ignore rules for various 3rd-party apps.
       - window_process: { equals: "PowerToys" }

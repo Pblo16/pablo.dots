@@ -91,6 +91,7 @@ return {
       --- Disable by setting to -1.
       override_timeoutlen = 500,
     },
+    system_prompt = "Proporcióname código siguiendo las mejores prácticas. Trabajo con Laravel para el backend y React y Livewire  para el frontend. También utilizo Node.js con pnpm cuando es necesario. Si el código es de React, usa componentes funcionales y hooks, asegurándote de que sea modular y reutilizable. Si es backend con Laravel, aplica principios SOLID y un enfoque limpio y estructurado. El código debe ser eficiente, bien organizado y evitar soluciones obsoletas. No necesito explicaciones extensas, pero sí comentarios claros cuando sea necesario. Enfócate en la implementación y en mantener buenas prácticas.",
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = "make",

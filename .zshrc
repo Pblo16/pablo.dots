@@ -81,13 +81,13 @@ function start_if_needed() {
 #-----------------------------------------
 # Configuración de FZF y plugins relacionados
 source <(fzf --zsh)
-# source $BREW_PREFIX/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+source $BREW_PREFIX/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
 source $BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-source ~/dots.config/fzf-tab.plugin.zsh/fzf-tab.plugin.zsh
-# Configuración de popup para fzf-tab
-zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+zstyle ':completion:*' verbose yes
+export CARAPACE_BRIDGES='zsh,bash'
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
 
 # Oh-my-posh para prompt personalizado
 eval "$(oh-my-posh init zsh --config $(brew --prefix oh-my-posh)/themes/nordtron.omp.json)"
@@ -110,13 +110,17 @@ alias lt='ls --tree'
 
 # Define neovim alias 
 alias n='nvim .'
-
+alias pj='cd ~/Projects && ls'
+alias vc='code --reuse-window .
+'
 # Alias para Laravel
 alias sail='sh $([ -f sail ] && echo sail || echo vendor/bin/sail)'
 alias pint='php $([ -f pint ] && echo pint || echo vendor/bin/pint)'
 
 export XDG_RUNTIME_DIR="$PREFIX/tmp/"
 
+# start_if_needed
+#
 # Function to send the current working directory to WezTerm
 function __wezterm_osc7() {
   if hash wezterm 2>/dev/null; then
@@ -129,3 +133,10 @@ function __wezterm_osc7() {
 
 # Hook to execute the function after every interactive command
 precmd_functions+=(__wezterm_osc7)
+autoload -Uz compinit && compinit -u
+fpath+=($(brew --prefix)/share/zsh/site-functions)
+fpath+=(~/.zsh/completions)
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
