@@ -12,8 +12,8 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     os.exit(1)
   end
 end
-vim.opt.rtp:prepend(lazypath)
 
+vim.opt.rtp:prepend(lazypath)
 
 -- Fix copy and paste in WSL (Windows Subsystem for Linux)
 if vim.fn.has("wsl") == 1 then
@@ -40,11 +40,12 @@ require("lazy").setup({
     { import = "lazyvim.plugins.extras.editor.harpoon2" },
     { import = "lazyvim.plugins.extras.editor.mini-files" },
     { import = "lazyvim.plugins.extras.editor.snacks_explorer" },
-    { import = "lazyvim.plugins.extras.editor.snacks_picker" },{ import = "lazyvim.plugins.extras.editor.harpoon2" },
+    { import = "lazyvim.plugins.extras.editor.snacks_picker" },
+    { import = "lazyvim.plugins.extras.editor.harpoon2" },
     { import = "lazyvim.plugins.extras.editor.mini-files" },
     { import = "lazyvim.plugins.extras.editor.snacks_explorer" },
     { import = "lazyvim.plugins.extras.editor.snacks_picker" },
-     -- Formatting plugins
+    -- Formatting plugins
     { import = "lazyvim.plugins.extras.formatting.biome" },
     { import = "lazyvim.plugins.extras.formatting.prettier" },
 
@@ -61,15 +62,14 @@ require("lazy").setup({
 
     -- Utility plugins
     { import = "lazyvim.plugins.extras.util.mini-hipatterns" },
-    
+
     -- AI plugins
     { import = "lazyvim.plugins.extras.ai.copilot" },
-    { import = "lazyvim.plugins.extras.ai.copilot-chat" },
-    
+    -- { import = "lazyvim.plugins.extras.ai.copilot-chat" },
+
     -- Import/override with your plugins
     { import = "plugins" },
-
-},
+  },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
     -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.

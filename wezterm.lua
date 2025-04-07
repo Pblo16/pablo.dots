@@ -12,12 +12,12 @@ if wezterm.config_builder then
 end
 
 config.font = wezterm.font("FiraCode Nerd Font Mono")
-config.font_size = 12.0
+config.font_size = 11.0
 
 -- Terminal color scheme
 config.colors = {
 	foreground = "#fff",
-	background = "#0e0e0e",
+	background = "#1e1e2e",
 	cursor_bg = "#97979B",
 	cursor_fg = "#EFF0EB",
 	cursor_border = "#97979B",
@@ -49,14 +49,14 @@ config.colors = {
 
 -- This is where you actually apply your config choices
 config.window_padding = {
-	top = 0,
+	top = 5,
 	right = 0,
-	left = 0,
+	left = 5,
 	bottom = 0,
 }
 
 -- Background
-config.window_background_opacity = 0.80 -- Adjust this value as needed
+config.window_background_opacity = 1.00 -- Adjust this value as needed
 -- config.win32_system_backdrop = "Acrylic" -- Only Works in Windows
 
 -- UI
@@ -78,13 +78,13 @@ else
 end
 
 config.keys = {
-	{ key = "s", mods = "CTRL|ALT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
+	{ key = "d", mods = "CTRL|ALT", action = wezterm.action.SplitVertical({ domain = "CurrentPaneDomain" }) },
 	{ key = "v", mods = "CTRL|ALT", action = wezterm.action.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 	{ key = "q", mods = "CTRL|ALT", action = wezterm.action.CloseCurrentPane({ confirm = false }) },
-	{ key = "LeftArrow", mods = "SHIFT", action = wezterm.action.ActivatePaneDirection("Left") },
-	{ key = "RightArrow", mods = "SHIFT", action = wezterm.action.ActivatePaneDirection("Right") },
-	{ key = "UpArrow", mods = "SHIFT", action = wezterm.action.ActivatePaneDirection("Up") },
-	{ key = "DownArrow", mods = "SHIFT", action = wezterm.action.ActivatePaneDirection("Down") },
+	{ key = "h", mods = "CTRL|ALT", action = wezterm.action.ActivatePaneDirection("Left") },
+	{ key = "l", mods = "CTRL|ALT", action = wezterm.action.ActivatePaneDirection("Right") },
+	{ key = "k", mods = "CTRL|ALT", action = wezterm.action.ActivatePaneDirection("Up") },
+	{ key = "j", mods = "CTRL|ALT", action = wezterm.action.ActivatePaneDirection("Down") },
 }
 -- and finally, return the configuration to wezterm
 return config

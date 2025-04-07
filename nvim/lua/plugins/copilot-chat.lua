@@ -32,8 +32,8 @@ return {
     opts = {
       prompts = prompts,
       system_prompt = "",
-      model = "gpt-4o",
-      answer_header = "D",
+      model = "claude-3.7-sonnet",
+      answer_header = "Dayra",
       window = {
         layout = "float",
       },

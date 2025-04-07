@@ -8,9 +8,9 @@ return {
   },
   cmd = { "Laravel" },
   keys = {
-    { "<leader>la", ":Laravel artisan<cr>" },
-    { "<leader>lr", ":Laravel routes<cr>" },
-    { "<leader>lm", ":Laravel related<cr>" },
+    { "<leader>sa", ":Laravel artisan<cr>" },
+    { "<leader>sr", ":Laravel routes<cr>" },
+    { "<leader>sm", ":Laravel related<cr>" },
   },
   event = { "VeryLazy" },
   config = true,

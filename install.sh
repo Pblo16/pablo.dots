@@ -22,7 +22,7 @@ RESET="\e[0m"
 # URLs y configuración
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 REPO_URL="https://github.com/Pblo16/pablo.dots.git"
-REPO_BRANCH="testing"
+REPO_BRANCH="main"
 REPO_DIR="pablo.dots"
 ZOXIDE_URL="https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh"
 ATUIN_URL="https://setup.atuin.sh"
@@ -273,6 +273,54 @@ configure_neovim() {
   success_msg "Neovim configurado correctamente"
 }
 
+# Configurar Tmux
+configure_tmux() {
+  print_header "📟 Configurando Tmux"
+
+  # Instalar Tmux Plugin Manager (TPM) si no existe
+  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    run_command "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" false
+  else
+    info_msg "Tmux Plugin Manager ya está instalado"
+  fi
+
+  # Copiar configuración de Tmux
+  run_command "cp -r .tmux/* $TMUX_CONFIG_DIR/" false
+  run_command "cp .tmux.conf $HOME/" false
+
+  # Instalar plugins de Tmux
+  info_msg "Instalando plugins de Tmux..."
+
+  # Matar sesión anterior si existe
+  if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
+    run_command "tmux kill-session -t $TMUX_SESSION_NAME" true
+  fi
+
+  # Crear una nueva sesión de tmux e instalar plugins
+  run_command "tmux new-session -d -s $TMUX_SESSION_NAME 'source ~/.tmux.conf; tmux run-shell ~/.tmux/plugins/tpm/bin/install_plugins'" false
+
+  # Esperar a que termine la instalación
+  info_msg "Esperando a que finalice la instalación de plugins de Tmux..."
+  sleep 5
+
+  # Matar la sesión
+  if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
+    run_command "tmux kill-session -t $TMUX_SESSION_NAME" true
+  fi
+
+  success_msg "Tmux configurado correctamente"
+}
+
+# Configurar Neovim
+configure_neovim() {
+  print_header "📝 Configurando Neovim"
+
+  # Copiar configuración de Neovim
+  run_command "cp -rf nvim/* $NVIM_CONFIG_DIR/" false
+
+  success_msg "Neovim configurado correctamente"
+}
+
 # Establecer shell por defecto
 set_default_shell() {
   print_header "🐚 Estableciendo shell por defecto"
@@ -336,6 +384,7 @@ main() {
   install_additional_tools
   configure_zsh
   configure_neovim
+  configure_tmux
   set_default_shell
   cleanup
 
