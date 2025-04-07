@@ -22,7 +22,7 @@ RESET="\e[0m"
 # URLs y configuración
 BREW_URL="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 REPO_URL="https://github.com/Pblo16/pablo.dots.git"
-REPO_BRANCH="testing"
+REPO_BRANCH="main"
 REPO_DIR="pablo.dots"
 ZOXIDE_URL="https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh"
 ATUIN_URL="https://setup.atuin.sh"
