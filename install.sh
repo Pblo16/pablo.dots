@@ -293,10 +293,43 @@ configure_zsh() {
 configure_neovim() {
   print_header "📝 Configurando Neovim"
 
-  # Copiar configuración de Neovim
-  run_command "cp -rf nvim/* $NVIM_CONFIG_DIR/" false
+  if [ -d "nvim" ] && [ "$(ls -A nvim 2>/dev/null)" ]; then
+    # Copiar configuración de Neovim si existe
+    run_command "cp -rf nvim/* $NVIM_CONFIG_DIR/" false
+    success_msg "Neovim configurado correctamente"
+  else
+    info_msg "No se encontró la configuración de Neovim en el repositorio"
+    info_msg "Creando una configuración básica de Neovim..."
+    
+    # Crear una configuración básica de init.lua
+    mkdir -p "$NVIM_CONFIG_DIR"
+    cat > "$NVIM_CONFIG_DIR/init.lua" << 'EOL'
+-- Basic Neovim configuration
+vim.opt.number = true
+vim.opt.relativenumber = true
+vim.opt.autoindent = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.smarttab = true
+vim.opt.softtabstop = 2
+vim.opt.mouse = 'a'
+vim.opt.clipboard = 'unnamedplus'
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
-  success_msg "Neovim configurado correctamente"
+-- Basic keybindings
+vim.g.mapleader = ' '
+vim.keymap.set('n', '<leader>w', '<cmd>write<cr>', { desc = 'Save' })
+vim.keymap.set('n', '<leader>q', '<cmd>quit<cr>', { desc = 'Quit' })
+
+-- Detect file types
+vim.cmd('filetype plugin indent on')
+vim.cmd('syntax enable')
+EOL
+
+    success_msg "Configuración básica de Neovim creada correctamente"
+    info_msg "Puedes personalizar tu configuración en: $NVIM_CONFIG_DIR"
+  fi
 }
 
 # Configurar Tmux
@@ -373,7 +406,7 @@ set_default_shell() {
       info_msg "Comando para cambiar shell manualmente: sudo chsh -s $shell_path \$USER"
     else
       success_msg "Shell cambiado a $shell_path correctamente"
-    fi
+    }
   else
     error_msg "Shell $shell_name no encontrado"
   fi
