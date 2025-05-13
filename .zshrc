@@ -39,6 +39,8 @@ load_module "$ZSH_LIB_DIR/completions.zsh"
 BREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 if [[ -f "$BREW_BIN/brew" ]]; then
   eval "$($BREW_BIN/brew shellenv)"
+  # Asegurarnos de que BREW_PREFIX esté definido para los plugins
+  BREW_PREFIX=$(brew --prefix)
 fi
 
 # Cargar configuraciones de herramientas (orden importante)
@@ -53,8 +55,12 @@ load_module "$ZSH_TOOLS_DIR/golang.zsh"     # Go
 load_module "$ZSH_TOOLS_DIR/docker.zsh"     # Docker
 
 # Cargar plugins de ZSH - Verificando existencia antes de cargar
-if [[ -d "$BREW_PREFIX/share" ]]; then
+# Mejora de la detección de plugins de zsh
+if [[ -d "$BREW_PREFIX/share/zsh-syntax-highlighting" ]]; then
   source "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
+if [[ -d "$BREW_PREFIX/share/zsh-autosuggestions" ]]; then
   source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
 
@@ -65,8 +71,19 @@ elif [[ -d "$HOME/dots.config/plugins/fzf-tab" ]]; then
   source "$HOME/dots.config/plugins/fzf-tab/fzf-tab.plugin.zsh"
 fi
 
-# Cargar atuin (historial de comandos)
-if command -v atuin >/dev/null 2>&1; then
+# Cargar atuin (historial de comandos) - Método mejorado con fallback
+if [[ -f "$HOME/.atuin/bin/env" ]]; then
+  # Método antiguo que el usuario tenía configurado
+  . "$HOME/.atuin/bin/env"
+  eval "$(atuin init zsh)"
+elif [[ -d "$HOME/.local/share/atuin" ]]; then
+  # Verificar si atuin está en esta ubicación común
+  export PATH="$HOME/.local/share/atuin:$PATH"
+  if command -v atuin >/dev/null 2>&1; then
+    eval "$(atuin init zsh)"
+  fi
+elif command -v atuin >/dev/null 2>&1; then
+  # Si atuin está en el PATH por cualquier otro método
   eval "$(atuin init zsh)"
 fi
 

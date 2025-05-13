@@ -39,7 +39,6 @@ BREW_PACKAGES=(
   "lazygit"
   "zsh-autosuggestions"
   "zsh-syntax-highlighting"
-  "zsh-autocomplete"
 )
 
 APT_PACKAGES=(
@@ -254,10 +253,19 @@ install_additional_tools() {
     info_msg "zoxide ya está instalado"
   fi
 
-  # Instalar atuin
+  # Instalar atuin - Mejorado para añadir al PATH
   if ! is_installed atuin; then
     info_msg "Instalando atuin..."
     run_command "curl --proto '=https' --tlsv1.2 -LsSf $ATUIN_URL | sh" false
+    
+    # Asegurar que atuin esté en el PATH y sea encontrable
+    if [[ -d "$HOME/.atuin/bin" ]]; then
+      info_msg "Configurando variables de entorno para atuin..."
+      # Añadir esto al archivo .zshenv para asegurar que esté disponible temprano
+      if ! grep -q "atuin/bin/env" "$HOME/.zshenv"; then
+        echo '. "$HOME/.atuin/bin/env"' >> "$HOME/.zshenv"
+      fi
+    fi
   else
     info_msg "atuin ya está instalado"
   fi
