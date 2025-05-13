@@ -293,9 +293,25 @@ configure_zsh() {
 configure_neovim() {
   print_header "📝 Configurando Neovim"
 
-  if [ -d "nvim" ] && [ "$(ls -A nvim 2>/dev/null)" ]; then
-    # Copiar configuración de Neovim si existe
-    run_command "cp -rf nvim/* $NVIM_CONFIG_DIR/" false
+  # Verificar la ubicación correcta del directorio nvim
+  local nvim_source_dir
+  
+  # Comprobar si existe en el directorio de trabajo actual (donde se ejecuta el script)
+  if [ -d "./nvim" ] && [ "$(ls -A ./nvim 2>/dev/null)" ]; then
+    nvim_source_dir="./nvim"
+  # Comprobar si existe en el directorio del repositorio clonado
+  elif [ -d "$DOTFILES_PATH/nvim" ] && [ "$(ls -A $DOTFILES_PATH/nvim 2>/dev/null)" ]; then
+    nvim_source_dir="$DOTFILES_PATH/nvim"
+  # Comprobar si existe en el directorio home
+  elif [ -d "$HOME/pablo.dots/nvim" ] && [ "$(ls -A $HOME/pablo.dots/nvim 2>/dev/null)" ]; then
+    nvim_source_dir="$HOME/pablo.dots/nvim"
+  fi
+
+  if [ -n "$nvim_source_dir" ]; then
+    # Copiar configuración de Neovim
+    info_msg "Usando configuración de Neovim desde: $nvim_source_dir"
+    run_command "mkdir -p $NVIM_CONFIG_DIR" false
+    run_command "cp -rf $nvim_source_dir/* $NVIM_CONFIG_DIR/" false
     success_msg "Neovim configurado correctamente"
   else
     info_msg "No se encontró la configuración de Neovim en el repositorio"
