@@ -373,7 +373,7 @@ set_default_shell() {
       info_msg "Comando para cambiar shell manualmente: sudo chsh -s $shell_path \$USER"
     else
       success_msg "Shell cambiado a $shell_path correctamente"
-    }
+
   else
     error_msg "Shell $shell_name no encontrado"
   fi
