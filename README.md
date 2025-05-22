@@ -1,6 +1,8 @@
-# Nombre del Proyecto
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Pblo16/pablo.dots)
 
-Descripción breve del proyecto.
+# Pablo.dots
+
+Mi configuracion de Linux para la terminal
 
 ## Tabla de Contenidos
 
