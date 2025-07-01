@@ -1,6 +1,5 @@
 -- Pull in the wezterm API
 local wezterm = require("wezterm")
-local act = wezterm.action
 
 -- This table will hold the configuration.
 local config = {}
@@ -14,36 +13,36 @@ end
 config.font = wezterm.font("FiraCode Nerd Font Mono")
 config.font_size = 11.0
 
--- Terminal color scheme
+-- Terminal color scheme (One Dark Pro)
 config.colors = {
-	foreground = "#fff",
-	background = "#1e1e2e",
-	cursor_bg = "#97979B",
-	cursor_fg = "#EFF0EB",
-	cursor_border = "#97979B",
-	selection_fg = "#0e0e0e",
-	selection_bg = "#808080",
-	scrollbar_thumb = "#4F4F4F",
-	split = "#30a1a2",
+	foreground = "#abb2bf",
+	background = "#282c34",
+	cursor_bg = "#528bff",
+	cursor_fg = "#282c34",
+	cursor_border = "#528bff",
+	selection_fg = "#282c34",
+	selection_bg = "#979eab",
+	scrollbar_thumb = "#3e4452",
+	split = "#528bff",
 	ansi = {
-		"#878787", -- Black
-		"#c44753", -- Red
-		"#e7881c", -- Green
-		"#D19A66", -- Yellow
-		"#30a1a2", -- Blue
-		"#12D8DD", -- Purple
-		"#66C4C4", -- Cyan
-		"#F1F1F0", -- White
+		"#282c34", -- Black
+		"#e06c75", -- Red
+		"#98c379", -- Green
+		"#e5c07b", -- Yellow
+		"#61afef", -- Blue
+		"#c678dd", -- Purple/Magenta
+		"#56b6c2", -- Cyan
+		"#abb2bf", -- White
 	},
 	brights = {
-		"#878787", -- Bright Black
-		"#c44753", -- Bright Red
-		"#e7881c", -- Bright Green
-		"#D19A66", -- Bright Yellow
-		"#30a1a2", -- Bright Blue
-		"#12D8DD", -- Bright Purple
-		"#66C4C4", -- Bright Cyan
-		"#F1F1F0", -- Bright White
+		"#5c6370", -- Bright Black
+		"#e06c75", -- Bright Red
+		"#98c379", -- Bright Green
+		"#e5c07b", -- Bright Yellow
+		"#61afef", -- Bright Blue
+		"#c678dd", -- Bright Purple/Magenta
+		"#56b6c2", -- Bright Cyan
+		"#ffffff", -- Bright White
 	},
 }
 
@@ -65,7 +64,7 @@ config.hide_tab_bar_if_only_one_tab = true
 config.use_fancy_tab_bar = false
 config.max_fps = 144 -- hack for smoothness
 
--- activate ONLY if windows --
+-- activate only if windows --
 
 config.default_domain = "WSL:Ubuntu"
 config.front_end = "OpenGL"
