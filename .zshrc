@@ -53,6 +53,7 @@ load_module "$ZSH_TOOLS_DIR/php.zsh"        # PHP/Laravel
 load_module "$ZSH_TOOLS_DIR/node.zsh"       # Node.js, pnpm, fnm
 load_module "$ZSH_TOOLS_DIR/golang.zsh"     # Go
 load_module "$ZSH_TOOLS_DIR/docker.zsh"     # Docker
+load_module "$ZSH_TOOLS_DIR/bindings.zsh"   # Bindings y atajos de teclado
 
 # Cargar plugins de ZSH - Verificando existencia antes de cargar
 # Mejora de la detección de plugins de zsh
