@@ -4,6 +4,12 @@ local wezterm = require("wezterm")
 -- This table will hold the configuration.
 local config = {}
 
+local mux = wezterm.mux
+wezterm.on("gui-startup", function(cmd)
+	local tab, pane, window = mux.spawn_window(cmd or {})
+	window:gui_window():maximize()
+end)
+
 -- In newer versions of wezterm, use the config_builder which will
 -- help provide clearer error messages
 if wezterm.config_builder then
@@ -13,36 +19,36 @@ end
 config.font = wezterm.font("FiraCode Nerd Font Mono")
 config.font_size = 11.0
 
--- Terminal color scheme (One Dark Pro)
+-- Terminal color scheme (Horizon Dark)
 config.colors = {
-	foreground = "#abb2bf",
-	background = "#282c34",
-	cursor_bg = "#528bff",
-	cursor_fg = "#282c34",
-	cursor_border = "#528bff",
-	selection_fg = "#282c34",
-	selection_bg = "#979eab",
-	scrollbar_thumb = "#3e4452",
-	split = "#528bff",
+	foreground = "#FDF0ED",
+	background = "#16191d",
+	cursor_bg = "#FDF0ED",
+	cursor_fg = "#1C1E26",
+	cursor_border = "#FDF0ED",
+	selection_fg = "#1C1E26",
+	selection_bg = "#FDF0ED",
+	scrollbar_thumb = "#232530",
+	split = "#26BBD9",
 	ansi = {
-		"#282c34", -- Black
-		"#e06c75", -- Red
-		"#98c379", -- Green
-		"#e5c07b", -- Yellow
-		"#61afef", -- Blue
-		"#c678dd", -- Purple/Magenta
-		"#56b6c2", -- Cyan
-		"#abb2bf", -- White
+		"#16161C", -- Black
+		"#E95678", -- Red
+		"#29D398", -- Green
+		"#FAB795", -- Yellow
+		"#26BBD9", -- Blue
+		"#EE64AE", -- Purple/Magenta
+		"#59E3E3", -- Cyan
+		"#FADAD1", -- White
 	},
 	brights = {
-		"#5c6370", -- Bright Black
-		"#e06c75", -- Bright Red
-		"#98c379", -- Bright Green
-		"#e5c07b", -- Bright Yellow
-		"#61afef", -- Bright Blue
-		"#c678dd", -- Bright Purple/Magenta
-		"#56b6c2", -- Bright Cyan
-		"#ffffff", -- Bright White
+		"#F075B7", -- Bright Black
+		"#EC6A88", -- Bright Red
+		"#3FDAA4", -- Bright Green
+		"#FBC3A7", -- Bright Yellow
+		"#3FC6DE", -- Bright Blue
+		"#F075B7", -- Bright Purple/Magenta
+		"#6BE6E6", -- Bright Cyan
+		"#FDF0ED", -- Bright White
 	},
 }
 
