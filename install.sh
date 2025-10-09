@@ -32,7 +32,6 @@ BREW_PACKAGES=(
   "fnm"
   "pnpm"
   "neovim"
-  "fzf"
   "gh"
   "ripgrep"
   "jandedobbeleer/oh-my-posh/oh-my-posh"
@@ -195,7 +194,7 @@ clone_dotfiles_repo() {
   cd "$REPO_DIR" || exit 1
 
   success_msg "Repositorio clonado/actualizado correctamente"
-  
+
   # Guardamos la ubicación del repositorio clonado para su uso posterior
   DOTFILES_PATH=$(pwd)
 }
@@ -257,13 +256,13 @@ install_additional_tools() {
   if ! is_installed atuin; then
     info_msg "Instalando atuin..."
     run_command "curl --proto '=https' --tlsv1.2 -LsSf $ATUIN_URL | sh" false
-    
+
     # Asegurar que atuin esté en el PATH y sea encontrable
     if [[ -d "$HOME/.atuin/bin" ]]; then
       info_msg "Configurando variables de entorno para atuin..."
       # Añadir esto al archivo .zshenv para asegurar que esté disponible temprano
       if ! grep -q "atuin/bin/env" "$HOME/.zshenv"; then
-        echo '. "$HOME/.atuin/bin/env"' >> "$HOME/.zshenv"
+        echo '. "$HOME/.atuin/bin/env"' >>"$HOME/.zshenv"
       fi
     fi
   else
@@ -278,22 +277,10 @@ configure_zsh() {
   print_header "🐚 Configurando Zsh"
   # Copiar archivo de configuración de Zsh
   run_command "cp -rf .zshrc $HOME/" false
-  
-  # Verificar si fzf-tab ya existe antes de clonar
-  if [ -d "$HOME/dots.config/fzf-tab" ]; then
-    info_msg "El directorio fzf-tab ya existe. Actualizando..."
-    run_command "cd $HOME/dots.config/fzf-tab && git pull" false "Error al actualizar fzf-tab"
-  elif [ -e "$HOME/dots.config/fzf-tab.plugin.zsh" ]; then
-    info_msg "Eliminando archivo existente en la ruta de destino..."
-    run_command "rm -rf $HOME/dots.config/fzf-tab.plugin.zsh" false
-    run_command "mkdir -p $HOME/dots.config" false
-    run_command "git clone https://github.com/Aloxaf/fzf-tab $HOME/dots.config/fzf-tab" false "Error al clonar fzf-tab"
-  else
-    info_msg "Clonando fzf-tab..."
-    run_command "mkdir -p $HOME/dots.config" false
-    run_command "git clone https://github.com/Aloxaf/fzf-tab $HOME/dots.config/fzf-tab" false "Error al clonar fzf-tab"
-  fi
-  
+
+  # Nota: La gestión de fzf y fzf-tab se ha eliminado del instalador
+  info_msg "Gestión de fzf y fzf-tab eliminada del instalador"
+
   success_msg "Zsh configurado correctamente"
 }
 
@@ -303,7 +290,7 @@ configure_neovim() {
 
   # Verificar la ubicación correcta del directorio nvim
   local nvim_source_dir
-  
+
   # Comprobar si existe en el directorio de trabajo actual (donde se ejecuta el script)
   if [ -d "./nvim" ] && [ "$(ls -A ./nvim 2>/dev/null)" ]; then
     nvim_source_dir="./nvim"
@@ -324,10 +311,10 @@ configure_neovim() {
   else
     info_msg "No se encontró la configuración de Neovim en el repositorio"
     info_msg "Creando una configuración básica de Neovim..."
-    
+
     # Crear una configuración básica de init.lua
     mkdir -p "$NVIM_CONFIG_DIR"
-    cat > "$NVIM_CONFIG_DIR/init.lua" << 'EOL'
+    cat >"$NVIM_CONFIG_DIR/init.lua" <<'EOL'
 -- Basic Neovim configuration
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -382,7 +369,7 @@ configure_tmux() {
   if [ -d "$DOTFILES_PATH/.tmux" ]; then
     run_command "cp -r $DOTFILES_PATH/.tmux/* $TMUX_CONFIG_DIR/" false
   fi
-  
+
   if [ -f "$DOTFILES_PATH/.tmux.conf" ]; then
     run_command "cp $DOTFILES_PATH/.tmux.conf $HOME/" false
   fi
@@ -439,41 +426,39 @@ set_default_shell() {
 # Configurar estructura de archivos ZSH
 setup_zsh_structure() {
   print_header "📂 Configurando estructura de archivos ZSH"
-  
+
   # Crear directorios para modularizar .zsh
   mkdir -p "$HOME/.zsh/"{lib,tools,plugins,completions}
-  
+
   # Copiar archivos de configuración modular
   if [ -d "$DOTFILES_PATH/.zsh" ]; then
     run_command "cp -r $DOTFILES_PATH/.zsh/* $HOME/.zsh/" false
   fi
-  
+
   # Clonar plugins necesarios
-  if [ ! -d "$HOME/.zsh/plugins/fzf-tab" ]; then
-    run_command "git clone https://github.com/Aloxaf/fzf-tab $HOME/.zsh/plugins/fzf-tab" false
-  fi
-  
+  # Nota: fzf-tab ya no se gestiona desde este instalador
+
   success_msg "Estructura de archivos ZSH configurada correctamente"
 }
 
 # Configurar directorio de configuración centralizado
 setup_config_dir() {
   print_header "🔧 Configurando directorio centralizado de configuración"
-  
+
   # Crear directorio principal de configuración
   DOTS_CONFIG_DIR="$HOME/dots.config"
   mkdir -p "$DOTS_CONFIG_DIR"
-  
+
   # Crear subdirectorios para diferentes tipos de configuración
   mkdir -p "$DOTS_CONFIG_DIR/"{shell,prompt,terminal,development,backups}
-  
+
   # Copiar archivo de configuración de Oh-My-Posh
   if [ -f "$DOTFILES_PATH/php.omp.json" ]; then
     run_command "cp $DOTFILES_PATH/php.omp.json $DOTS_CONFIG_DIR/prompt/" false
   fi
-  
+
   # Crear archivo de configuración de ZSH (para personalización fácil)
-  cat > "$DOTS_CONFIG_DIR/shell/zsh_custom.zsh" << 'EOL'
+  cat >"$DOTS_CONFIG_DIR/shell/zsh_custom.zsh" <<'EOL'
 # Archivo para personalizaciones de ZSH
 # Este archivo se carga al final de .zshrc y no será sobrescrito en las actualizaciones
 
@@ -492,7 +477,7 @@ setup_config_dir() {
 EOL
 
   # Crear archivo de configuración de Tmux (para personalización fácil)
-  cat > "$DOTS_CONFIG_DIR/terminal/tmux_custom.conf" << 'EOL'
+  cat >"$DOTS_CONFIG_DIR/terminal/tmux_custom.conf" <<'EOL'
 # Configuración personalizada de Tmux
 # Este archivo se incluye desde .tmux.conf y no será sobrescrito
 
@@ -511,7 +496,7 @@ EOL
 EOL
 
   # Crear archivo de configuración para desarrollo (herramientas)
-  cat > "$DOTS_CONFIG_DIR/development/tools.sh" << 'EOL'
+  cat >"$DOTS_CONFIG_DIR/development/tools.sh" <<'EOL'
 # Configuración de herramientas de desarrollo
 # Este archivo puede ser modificado para personalizar herramientas específicas
 
@@ -526,7 +511,7 @@ EOL
 EOL
 
   # Crear archivo de configuración para proyectos (rutas y atajos)
-  cat > "$DOTS_CONFIG_DIR/development/projects.sh" << 'EOL'
+  cat >"$DOTS_CONFIG_DIR/development/projects.sh" <<'EOL'
 # Configuración relacionada con proyectos
 # Define aquí paths a proyectos frecuentes o atajos para navegar entre ellos
 
@@ -537,7 +522,7 @@ EOL
 EOL
 
   # Crear README para explicar la estructura
-  cat > "$DOTS_CONFIG_DIR/README.md" << 'EOL'
+  cat >"$DOTS_CONFIG_DIR/README.md" <<'EOL'
 # Directorio de Configuración Centralizada
 
 Este directorio contiene los archivos de configuración que puedes personalizar
@@ -567,14 +552,12 @@ se cargarán automáticamente y no serán sobrescritos en futuras actualizacione
 EOL
 
   # Clonar plugins adicionales que antes iban a diferentes ubicaciones
-  if [ ! -d "$DOTS_CONFIG_DIR/plugins/fzf-tab" ]; then
-    run_command "mkdir -p $DOTS_CONFIG_DIR/plugins" false
-    run_command "git clone https://github.com/Aloxaf/fzf-tab $DOTS_CONFIG_DIR/plugins/fzf-tab" false
-  fi
-  
+  # Antes se clonaba fzf-tab en esta ubicación; ya no se realiza
+  run_command "mkdir -p $DOTS_CONFIG_DIR/plugins" false
+
   # Actualizar los permisos de los archivos
   run_command "chmod -R u+w $DOTS_CONFIG_DIR" false
-  
+
   success_msg "Directorio de configuración centralizado creado correctamente"
   info_msg "Puedes personalizar tus configuraciones en: $DOTS_CONFIG_DIR"
 }
@@ -582,38 +565,38 @@ EOL
 # Actualizar referencias en archivos de configuración
 update_config_references() {
   print_header "🔄 Actualizando referencias en archivos de configuración"
-  
+
   # Actualizar referencia en .zshrc para cargar configuraciones personalizadas
   if [ -f "$HOME/.zshrc" ]; then
     # Verificar si ya existe la línea de carga personalizada
     if ! grep -q "DOTS_CONFIG_DIR" "$HOME/.zshrc"; then
-      echo -e "\n# Cargar configuraciones personalizadas\nDOTS_CONFIG_DIR=\"\$HOME/dots.config\"\n[[ -f \"\$DOTS_CONFIG_DIR/shell/zsh_custom.zsh\" ]] && source \"\$DOTS_CONFIG_DIR/shell/zsh_custom.zsh\"" >> "$HOME/.zshrc"
+      echo -e "\n# Cargar configuraciones personalizadas\nDOTS_CONFIG_DIR=\"\$HOME/dots.config\"\n[[ -f \"\$DOTS_CONFIG_DIR/shell/zsh_custom.zsh\" ]] && source \"\$DOTS_CONFIG_DIR/shell/zsh_custom.zsh\"" >>"$HOME/.zshrc"
       success_msg "Configuración personalizada añadida a .zshrc"
     fi
   fi
-  
+
   # Actualizar referencia en .tmux.conf (si existe)
   if [ -f "$HOME/.tmux.conf" ]; then
     if ! grep -q "dots.config/terminal/tmux_custom.conf" "$HOME/.tmux.conf"; then
-      echo -e "\n# Cargar configuración personalizada\nif-shell \"test -f ~/dots.config/terminal/tmux_custom.conf\" \"source ~/dots.config/terminal/tmux_custom.conf\"" >> "$HOME/.tmux.conf"
+      echo -e "\n# Cargar configuración personalizada\nif-shell \"test -f ~/dots.config/terminal/tmux_custom.conf\" \"source ~/dots.config/terminal/tmux_custom.conf\"" >>"$HOME/.tmux.conf"
       success_msg "Configuración personalizada añadida a .tmux.conf"
     fi
   fi
-  
+
   # Actualizar referencia en archivo de prompt.zsh
   PROMPT_FILE="$HOME/.zsh/tools/prompt.zsh"
   if [ -f "$PROMPT_FILE" ]; then
     sed -i 's|~/dots.config/php.opm.json|~/dots.config/prompt/php.omp.json|g' "$PROMPT_FILE"
     success_msg "Referencias actualizadas en archivo de prompt"
   fi
-  
+
   # Actualizar referencia en archivos de desarrollo
   DEV_FILE="$HOME/.zsh/tools/dev.zsh"
   if [ -f "$DEV_FILE" ]; then
-    echo -e "\n# Cargar configuraciones de desarrollo personalizadas\n[[ -f \"\$HOME/dots.config/development/tools.sh\" ]] && source \"\$HOME/dots.config/development/tools.sh\"\n[[ -f \"\$HOME/dots.config/development/projects.sh\" ]] && source \"\$HOME/dots.config/development/projects.sh\"" >> "$DEV_FILE"
+    echo -e "\n# Cargar configuraciones de desarrollo personalizadas\n[[ -f \"\$HOME/dots.config/development/tools.sh\" ]] && source \"\$HOME/dots.config/development/tools.sh\"\n[[ -f \"\$HOME/dots.config/development/projects.sh\" ]] && source \"\$HOME/dots.config/development/projects.sh\"" >>"$DEV_FILE"
     success_msg "Referencias de desarrollo actualizadas"
   fi
-  
+
   success_msg "Referencias en archivos de configuración actualizadas correctamente"
 }
 

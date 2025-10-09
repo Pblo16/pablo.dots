@@ -5,9 +5,11 @@ return {
   version = false, -- set this if you want to always pull the latest change
   opts = {
     ---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
-    provider = "copilot", -- Recommend using Claude
-    copilot = {
-      model = "claude-3.7-sonnet", -- o1-preview | o1-mini | claude-3.5-sonnet
+    providers = {
+      copilot = {
+        model = "claude-sonnet-4.5", -- o1-preview | o1-mini | claude-3.5-sonnet
+        auto_suggestions = false, -- si quieres desactivar sugerencias automáticas
+      },
     },
     auto_suggestions_provider = "copilot", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
     behaviour = {
@@ -102,8 +104,8 @@ return {
     "nvim-lua/plenary.nvim",
     "MunifTanjim/nui.nvim",
     --- The below dependencies are optional,
-    "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
     {
+
       -- support for image pasting
       "HakonHarnes/img-clip.nvim",
       event = "VeryLazy",
