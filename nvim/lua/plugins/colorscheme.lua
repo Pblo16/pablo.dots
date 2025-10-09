@@ -1,22 +1,20 @@
 return {
   {
-    "navarasu/onedark.nvim",
-    priority = 1000,
-    config = function()
-      require("onedark").setup({ style = "darker" })
-      require("onedark").load()
-    end,
-  },
-  {
     "vague2k/vague.nvim",
     config = function()
-      require("vague").setup({ transparent = true })
+      -- NOTE: you do not need to call setup if you don't want to.
+      require("vague").setup({
+        -- optional configuration here
+        transparent = true, -- don't set background
+      })
     end,
   },
   {
+    -- LazyVim configuration
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = nil, -- no sobrescribir
+      -- Set the default color scheme
+      colorscheme = "vague",
     },
   },
 }
