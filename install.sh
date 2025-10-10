@@ -278,8 +278,20 @@ configure_zsh() {
   # Copiar archivo de configuración de Zsh
   run_command "cp -rf .zshrc $HOME/" false
 
-  # Nota: La gestión de fzf y fzf-tab se ha eliminado del instalador
-  info_msg "Gestión de fzf y fzf-tab eliminada del instalador"
+  # Verificar si fzf-tab ya existe antes de clonar
+  if [ -d "$HOME/dots.config/fzf-tab" ]; then
+    info_msg "El directorio fzf-tab ya existe. Actualizando..."
+    run_command "cd $HOME/dots.config/fzf-tab && git pull" false "Error al actualizar fzf-tab"
+  elif [ -e "$HOME/dots.config/fzf-tab.plugin.zsh" ]; then
+    info_msg "Eliminando archivo existente en la ruta de destino..."
+    run_command "rm -rf $HOME/dots.config/fzf-tab.plugin.zsh" false
+    run_command "mkdir -p $HOME/dots.config" false
+    run_command "git clone https://github.com/Aloxaf/fzf-tab $HOME/dots.config/fzf-tab" false "Error al clonar fzf-tab"
+  else
+    info_msg "Clonando fzf-tab..."
+    run_command "mkdir -p $HOME/dots.config" false
+    run_command "git clone https://github.com/Aloxaf/fzf-tab $HOME/dots.config/fzf-tab" false "Error al clonar fzf-tab"
+  fi
 
   success_msg "Zsh configurado correctamente"
 }
@@ -436,7 +448,9 @@ setup_zsh_structure() {
   fi
 
   # Clonar plugins necesarios
-  # Nota: fzf-tab ya no se gestiona desde este instalador
+  if [ ! -d "$HOME/.zsh/plugins/fzf-tab" ]; then
+    run_command "git clone https://github.com/Aloxaf/fzf-tab $HOME/.zsh/plugins/fzf-tab" false
+  fi
 
   success_msg "Estructura de archivos ZSH configurada correctamente"
 }
@@ -552,8 +566,10 @@ se cargarán automáticamente y no serán sobrescritos en futuras actualizacione
 EOL
 
   # Clonar plugins adicionales que antes iban a diferentes ubicaciones
-  # Antes se clonaba fzf-tab en esta ubicación; ya no se realiza
-  run_command "mkdir -p $DOTS_CONFIG_DIR/plugins" false
+  if [ ! -d "$DOTS_CONFIG_DIR/plugins/fzf-tab" ]; then
+    run_command "mkdir -p $DOTS_CONFIG_DIR/plugins" false
+    run_command "git clone https://github.com/Aloxaf/fzf-tab $DOTS_CONFIG_DIR/plugins/fzf-tab" false
+  fi
 
   # Actualizar los permisos de los archivos
   run_command "chmod -R u+w $DOTS_CONFIG_DIR" false
