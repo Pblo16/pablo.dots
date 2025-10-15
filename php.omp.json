@@ -29,11 +29,11 @@
           "template": "  {{ .Full }} "
         },
         {
+          "type": "node",
           "background": "transparent",
           "foreground": "p:background",
           "style": "plain",
-          "template": "\ue0b0 ",
-          "type": "text"
+          "template": "\ue0b0 "
         },
         {
           "type": "path",
@@ -42,11 +42,11 @@
           "background": "p:background",
 
           "properties": {
-            "folder_icon": " ",
-            "home_icon": "~",
+            "folder_icon": "  ",
+            "home_icon": "  - - -",
             "style": "agnoster_short"
           },
-          "template": " {{ .Path }} "
+          "template": "{{ .Path }} "
         },
         {
           "background": "transparent",
@@ -54,13 +54,6 @@
           "style": "plain",
           "template": "\ue0b0 ",
           "type": "text"
-        },
-        {
-          "type": "text",
-          "style": "plain",
-          "background": "p:background",
-          "foreground": "p:background",
-          "template": "  "
         },
         {
           "type": "git",
