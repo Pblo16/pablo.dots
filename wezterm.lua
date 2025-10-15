@@ -16,7 +16,7 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
-config.font = wezterm.font("FiraCode Nerd Font Mono")
+config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
 config.font_size = 11.0
 
 -- Terminal color scheme (Horizon Dark)
@@ -93,3 +93,4 @@ config.keys = {
 }
 -- and finally, return the configuration to wezterm
 return config
+
