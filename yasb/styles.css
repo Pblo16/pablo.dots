@@ -1,0 +1,714 @@
+:root {
+    --font-name-primary: "Segoe UI", "JetBrainsMono NFP";
+    --font-name-secondary: "JetBrainsMono NFP";
+    --font-name-icons: "Segoe Fluent Icons";
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.54);
+    --text-small: 12px;
+    --text-normal: 14px;
+    --text-lg: 16px;
+    --text-xl: 18px;
+    --text-2xl: 24px;
+    --text-3xl: 30px;
+    --text-5xl: 48px;
+    --text-6xl: 64px;
+    --font-normal: 400;
+    --font-bold: 600;
+    --font-bold-xl: 900;
+    --bg-taskbar: rgba(8, 8, 8, 0.4);
+    --bg-primary: rgba(8, 8, 8, 0.4);
+    --bg-secondary: rgba(28, 30, 29, 1);
+    --bg-hover-primary: rgba(255, 255, 255, 0.08);
+    --bg-hover-secondary: rgba(255, 255, 255, 0.04);
+    --bg-hover-third: rgba(255, 255, 255, 0.12);
+    --bg-hover-fourth: rgba(24, 24, 37, 0.212);
+    --color-grey: rgba(128, 130, 158, 0.3);
+    --color-dark-grey: hsla(236, 13%, 36%, 0.3);
+    --color-light-grey: rgba(186, 187, 202, 0.3);
+    --color-yellow: #fae93f;
+    --color-green: #3f925f;
+    --color-dark-green: #223a2c;
+    --color-light-green: #61ad7e;
+    --color-red: #cb3b42;
+    --color-dark-red: #5a1e22;
+    --color-light-red: #e04c52;
+    --color-light-blue: rgb(112, 157, 255);
+    --radius-normal: 8px;
+    --radius-xl: 20px;
+    --padding-normal: 0 8px;
+    --margin-small: 2px 0;
+    --margin-normal: 8px;
+    --margin-lg: 12px;
+    --padding-label: 0px 2px 2px 2px;
+    --padding-menu: 12px 84px 12px 14px;
+    --padding-volume: 12px 14px;
+    --padding-button: 4px 8px;
+    --margin-widget: 4px 0;
+    --padding-tooltip: 12px 24px;
+}
+
+* {
+    font-size: 13px;
+    color: #ffffff;
+    font-weight: 600;
+    font-family: "Segoe UI", "JetBrainsMono NFP";
+    margin: 0;
+    padding: 0;
+}
+
+.yasb-bar {
+    padding: 0 8px;
+    margin: 0;
+    background-color: rgba(25, 25, 25, 0.7);
+}
+
+.widget {
+    padding: 0 8px;
+    margin: 0;
+}
+
+
+.widget .label {
+    padding: 0px 2px 2px 2px;
+}
+
+.widget .label.alt {
+    padding: 1px 8px 1px 8px;
+}
+
+
+/*POWER MENU WIDGET*/
+.uptime {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #ffffff;
+    font-weight: 600;
+    font-family: "Segoe UI";
+}
+
+.power-menu-widget .label {
+    font-size: 13px;
+}
+
+.power-menu-popup {
+    background-color: rgba(24, 24, 37, 0.103);
+    border-radius: 12px;
+}
+
+.power-menu-popup .button {
+    padding: 0;
+    width: 240px;
+    height: 120px;
+    border-radius: 8px;
+    background-color: rgba(41, 42, 58, 0.497);
+    font-family: "Segoe UI";
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 8px;
+}
+
+.power-menu-popup .button.hover {
+    background-color: rgba(41, 42, 58, 0.74);
+    border: 1px solid rgb(55, 56, 75);
+}
+
+.power-menu-popup .button .label {
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(255, 255, 255);
+    font-family: "Segoe UI";
+}
+
+.power-menu-popup .button .icon {
+    font-size: 48px;
+    padding-top: 8px;
+}
+
+.power-menu-popup .button.cancel .icon {
+    color: rgba(243, 139, 168, 0.75);
+}
+
+.power-menu-popup .button.cancel .label {
+    color: rgba(243, 139, 168, 0.95);
+}
+
+.power-menu-popup .button.shutdown .icon {
+    color: rgba(137, 180, 250, 0.75);
+}
+
+.power-menu-popup .button.shutdown .label {
+    color: rgba(137, 180, 250, 0.95);
+}
+
+/* ICONS */
+.icon {
+    font-size: 16px;
+}
+
+.volume-widget .icon {
+    color: #89b4fa;
+    margin: 1px 2px 0 0;
+}
+
+/* WEATHER WIDGET */
+.weather-widget .icon {
+    font-size: 16px;
+    margin: 0 2px 1px 0;
+}
+
+.weather-widget .icon.sunnyDay {
+    color: rgb(221, 210, 107);
+}
+
+.weather-widget .icon.clearNight {
+    color: rgb(107, 189, 221);
+    font-size: 22px;
+    margin: 1px 2px 0px 0;
+}
+
+/* Media */
+.media-widget {
+  /* padding: 0; */
+  margin: 4px 4px;
+  padding: 0 8px;
+  border-radius: var(--radius-normal);
+  background-color: var(--bg-hover-secondary);
+}
+.media-widget .label {
+  color: var(--text-primary);
+  padding: 2px 10px;
+  padding-right: 4px;
+  font-size: var(--text-small);
+}
+.media-widget .btn {
+  color: var(--text-secondary);
+  padding: 0 4px;
+  margin: 0;
+  font-family: var(--font-name-icons);
+  font-weight: var(--font-normal);
+}
+.media-widget .btn:hover {
+  color: var(--text-primary);
+}
+.media-widget .btn.play {
+  font-size: var(--text-lg);
+}
+.media-widget .btn.disabled:hover,
+.media-widget .btn.disabled {
+  color: var(--color-light-grey);
+  font-size: var(--text-normal);
+}
+
+.media-menu {
+  min-width: 540px;
+  max-width: 540px;
+  background-color: var(--bg-primary);
+}
+.media-menu .title,
+.media-menu .artist,
+.media-menu .source {
+  font-size: var(--text-lg);
+  font-weight: var(--font-bold);
+  margin-left: 20px;
+  font-family: var(--font-name-primary);
+}
+.media-menu .artist {
+  font-size: var(--text-normal);
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.media-menu .source {
+  font-size: 11px;
+  color: var(--text-secondary);
+  border-radius: var(--radius-normal);
+  background-color: var(--bg-hover-primary);
+  padding: var(--padding-button);
+  font-weight: var(--font-normal);
+  font-family: var(--font-name-primary);
+  margin-top: 10px;
+}
+.media-menu .btn {
+  font-family: var(--font-name-icons);
+  font-size: var(--text-lg);
+  font-weight: var(--font-normal);
+  margin: 10px 2px 0px 2px;
+  min-width: 40px;
+  max-width: 40px;
+  min-height: 40px;
+  max-height: 40px;
+  border-radius: 20px;
+}
+.media-menu .btn.prev {
+  margin-left: 10px;
+}
+.media-menu .btn:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-hover-primary);
+}
+.media-menu .btn.play {
+  background-color: var(--bg-hover-primary);
+  font-size: 20px;
+}
+.media-menu .btn.play:hover {
+  background-color: var(--bg-hover-third);
+}
+.media-menu .btn.disabled:hover,
+.media-menu .btn.disabled {
+  color: var(--color-light-grey);
+  background-color: transparent;
+}
+
+.media-menu .playback-time {
+  font-size: var(--text-normal);
+  font-family: var(--font-name-primary);
+  color: var(--text-secondary);
+  margin-top: 20px;
+  min-width: 100px;
+}
+.media-menu .progress-slider {
+  height: 10px;
+  margin: 10px 4px 14px 4px;
+  border-radius: 2px;
+}
+.media-menu .progress-slider::groove {
+  background: transparent;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-grey);
+}
+.media-menu .progress-slider::groove:hover {
+  background: transparent;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-grey);
+}
+.media-menu .progress-slider::sub-page {
+  background: var(--color-light-green);
+  border-radius: 3px;
+  height: 4px;
+}
+
+.media-menu .app-volume-container {
+  background-color: var(--bg-hover-primary);
+  padding: 8px 6px;
+  border-radius: 16px;
+  margin-left: 10px;
+}
+.media-menu .app-volume-container .volume-slider::groove {
+  background: var(--bg-hover-primary);
+  width: 4px;
+  border-radius: 2px;
+}
+.media-menu .app-volume-container .volume-slider::add-page {
+  background: var(--color-light-green);
+  border-radius: 2px;
+}
+.media-menu .app-volume-container .volume-slider::groove:hover {
+  background: var(--bg-hover-primary);
+  width: 6px;
+  border-radius: 3px;
+}
+.media-menu .app-volume-container .volume-slider::sub-page {
+  background: var(--bg-hover-primary);
+  border-radius: 3px;
+}
+.media-menu .app-volume-container .mute-button,
+.media-menu .app-volume-container .unmute-button {
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+  font-family: var(--font-name-icons);
+  margin-top: 4px;
+}
+.media-menu .app-volume-container .unmute-button {
+  color: var(--text-secondary);
+}
+
+
+/* TASBAR WIDGET */
+/* .taskbar-widget {
+    padding: 0;
+    margin: 0;
+}
+
+.taskbar-widget .app-icon {
+    padding: 0 px;
+}
+
+.win-button-widget .label {
+    font-size: 18px;
+} */
+
+/* SYSTEM TRY */
+
+.systray {
+    background: transparent;
+    border: None;
+    margin: 0;
+}
+
+.systray .unpinned-container {
+    background: transparent;
+    border-radius: 8px;
+}
+
+.systray .pinned-container {
+    background: transparent;
+}
+
+.systray .button {
+    border-radius: 4px;
+    padding: 0 6px;
+    margin: 4px;
+}
+
+.systray .button:hover {
+    background: transparent;
+}
+
+.systray .button[dragging=true] {
+    border-color: rgba(211, 211, 211, 0.705);
+}
+
+.systray .unpinned-visibility-btn {
+    border-radius: 4px;
+    height: 20px;
+    width: 16px;
+}
+
+.systray .unpinned-visibility-btn:checked {
+    background: transparent;
+}
+
+.systray .unpinned-visibility-btn:hover {
+    border-radius: 4px;
+}
+
+/* HOME MENU */
+
+.home-widget {
+    padding: 2px 4px 2px 0px;
+}
+
+.home-widget .widget-container {
+    background-color: transparent;
+}
+
+.home-widget .icon:hover {
+    color: white;
+}
+
+.home-menu {
+    background-color: rgba(36, 36, 36, 0.604);
+}
+
+.home-menu .menu-item {
+    padding: 8px 48px 9px 16px;
+    font-size: 12px;
+    font-family: 'Segoe UI';
+    color: white;
+    font-weight: 600;
+}
+
+.home-menu .menu-item:hover {
+    background-color: rgba(157, 180, 141, 0.116);
+    color: #fff;
+}
+
+.home-menu .separator {
+    max-height: 1px;
+    background-color: rgba(157, 180, 141, 0.116);
+}
+
+/* NOTIFICATIONS */
+
+.notification-widget {
+    padding: 0 8px 0 8px;
+}
+
+.notification-widget .widget-container {
+    margin: 0;
+}
+
+.notification-widget .icon {
+    font-size: 15px;
+}
+
+/*AUDIO DROPDOWN*/
+
+.audio-menu {
+    background-color: rgba(36, 36, 36, 0.604);
+    padding: 0 0 12px 0
+}
+
+.audio-container .device {
+    font-size: 13px;
+    font-family: 'Segoe UI';
+    background-color: transparent;
+    border: none;
+    padding: 7px 4px 7px 4px;
+    margin: 2px 0;
+    border-radius: 4px;
+    text-align: left;
+}
+
+.audio-container .device.selected {
+    background-color: rgba(255, 255, 255, 0.085);
+}
+
+.audio-container .device:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/*CLOCK - CALENDAR WIDGET DROPDOWN*/
+
+.calendar {
+    background-color: rgba(36, 36, 36, 0.604);
+    padding: 10px 25px 10px 0px;
+}
+
+.calendar .calendar-table,
+.calendar .calendar-table::item {
+    background-color: transparent;
+    color: white;
+    font-family: 'Segoe UI';
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+}
+
+.calendar .calendar-table::item:selected {
+    background-color: #4cc2ff;
+    color: #153647;
+    border-radius: 12px;
+}
+
+.calendar .day-label {
+    margin-top: 10px;
+}
+
+.calendar .day-label,
+.calendar .month-label,
+.calendar .date-label {
+    font-family: 'Segoe UI';
+    font-size: 16px;
+    color: #fff;
+    font-weight: 700;
+    min-width: 180px;
+    max-width: 180px;
+}
+
+.calendar .month-label {
+    font-weight: normal;
+}
+
+.calendar .date-label {
+    font-size: 88px;
+    font-weight: 900;
+    color: rgb(255, 255, 255);
+    margin-top: -20px;
+}
+
+/*TOOLTIPS*/
+
+QToolTip {
+    padding: 4px;
+    color: white;
+    font-size: 12px;
+    background-color: rgb(36, 36, 36);
+}
+
+/* GlazeWM Workspaces */
+
+.glazewm-workspaces {
+    margin: 0;
+}
+
+.glazewm-workspaces .offline-status {
+    color: rgb(205, 214, 244);
+    font-size: 12px;
+    padding: 0 4px;
+    font-weight: 900;
+}
+
+.glazewm-workspaces .ws-btn {
+    border: none;
+    background-color: #3f3f3f;
+    margin: 0px 4px;
+    padding: 0;
+    color: rgba(0, 0, 0, 0);
+    border-radius: 5px;
+    height: 10px;
+    width: 10px;
+}
+
+.glazewm-workspaces .ws-btn.populated {
+    background-color: #3f3f3f;
+}
+
+.glazewm-workspaces .ws-btn.active_populated,
+.glazewm-workspaces .ws-btn.active_empty {
+    color: rgba(0, 68, 255, 0);
+    background-color: #dcdcdc;
+    width: 28px;
+    height: 10px;
+    border-radius: 5px;
+}
+
+/* NOTES WIDGET */
+
+.notes-widget {
+    padding: 4;
+}
+
+.notes-widget .label {
+    font-size: 14px;
+}
+
+.notes-widget .icon {
+    font-size: 16px;
+}
+
+/* Notes Widget Menu */
+.notes-menu {
+    min-width: 400px;
+    max-width: 400px;
+}
+
+.notes-menu .note-item {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.notes-menu .note-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.notes-menu .note-item .icon {
+    font-size: 16px;
+    padding: 0 4px;
+    color: rgb(126, 126, 126);
+}
+
+.notes-menu .delete-button {
+    color: #ff6b6b;
+    background: transparent;
+    border: none;
+    font-size: 8px;
+    padding: 7px 8px;
+    border-radius: 3px;
+}
+
+.notes-menu .delete-button:hover {
+    background-color: rgba(128, 128, 128, 0.5);
+}
+
+.notes-menu .note-item .title {
+    font-size: 13px;
+    font-family: 'Segoe UI';
+}
+
+.notes-menu .note-item .date {
+    font-size: 12px;
+    font-family: 'Segoe UI';
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.notes-menu .empty-list {
+    font-family: 'Segoe UI';
+    color: rgb(149, 149, 149);
+    font-size: 24px;
+    font-weight: 600;
+    padding: 10px 0 20px 0;
+}
+
+.notes-menu .add-button,
+.notes-menu .cancel-button {
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-family: 'Segoe UI';
+}
+
+.notes-menu .cancel-button {
+    margin-left: 4px;
+}
+
+.notes-menu .add-button:hover,
+.notes-menu .cancel-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.notes-menu .scroll-area {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+}
+
+.notes-menu .note-input {
+    background-color: rgba(17, 17, 27, 0.2);
+    border: 1px solid rgb(116, 116, 116);
+    font-family: 'Segoe UI';
+    font-size: 14px;
+    max-height: 30px;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.note-input:focus {
+    border: 1px solid rgb(145, 145, 145);
+}
+
+/* Taskbar */
+.taskbar-widget {
+    margin-left: 10px;
+}
+
+.taskbar-widget:hover {
+    background-color: transparent;
+}
+
+.taskbar-widget .app-container {
+    border-radius: var(--radius-normal);
+    /* border-radius: 0; */
+    padding: 0 7px;
+    margin: 0 1px;
+}
+
+.taskbar-widget .app-container:hover {
+    background-color: var(--bg-hover-primary);
+}
+
+.taskbar-widget .app-container.foreground {
+    /* border-bottom: 2px solid var(--color-green); */
+    background-color: var(--bg-hover-third);
+}
+
+.taskbar-widget .app-container.flashing {
+    background-color: var(--color-red);
+}
+
+.taskbar-widget .app-container .app-title {
+    padding-left: 4px;
+}
+
+/* Taskbar preview popup is very limited in styling options, do not use margins/paddings here */
+.taskbar-preview {
+    border-radius: var(--radius-normal);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--color-grey);
+}
+
+.taskbar-preview .header {
+    padding-bottom: 18px;
+    padding-top: var(--margin-normal);
+}
+
+.taskbar-preview .header .title {
+    color: var(--text-primary);
+    font-weight: var(--font-bold);
+    font-size: var(--text-normal);
+}
