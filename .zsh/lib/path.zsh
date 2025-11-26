@@ -13,6 +13,3 @@ export XDG_RUNTIME_DIR="$PREFIX/tmp/"  # Definir directorio de tiempo de ejecuci
 
 # Configuración de PATH básico
 append_path "$HOME/.local/bin"
-
-# Asegurar que cargo está disponible
-[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"

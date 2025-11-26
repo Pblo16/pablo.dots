@@ -38,6 +38,8 @@ BREW_PACKAGES=(
   "lazygit"
   "zsh-autosuggestions"
   "zsh-syntax-highlighting"
+  "fzf"
+  "go"
 )
 
 APT_PACKAGES=(
@@ -48,13 +50,13 @@ APT_PACKAGES=(
   "zsh"
   "lsd"
   "unzip"
+  "p7zip"
+  "docker.io"
 )
 
 # Directorios
 CONFIG_DIR="$HOME/.config"
 NVIM_CONFIG_DIR="$CONFIG_DIR/nvim"
-TMUX_CONFIG_DIR="$HOME/.tmux"
-TMUX_SESSION_NAME="dotfiles-setup"
 
 # =====================================================
 # 🛠️ FUNCIONES AUXILIARES
@@ -158,7 +160,7 @@ install_basic_dependencies() {
     fi
   done
 
-  success_msg "Dependencias básicas instaladas correctamente"
+    success_msg "Dependencias básicas instaladas correctamente"
 }
 
 # Instalar Rust
@@ -269,6 +271,22 @@ install_additional_tools() {
     info_msg "atuin ya está instalado"
   fi
 
+  # Instalar Composer para PHP
+  if ! is_installed composer; then
+    info_msg "Instalando Composer..."
+    run_command "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer" false
+  else
+    info_msg "Composer ya está instalado"
+  fi
+
+  # Configurar Docker si está instalado
+  if is_installed docker; then
+    info_msg "Configurando Docker..."
+    run_command "sudo usermod -aG docker $USER" false
+    run_command "sudo systemctl enable docker" false
+    run_command "sudo systemctl start docker" false
+  fi
+
   success_msg "Herramientas adicionales instaladas correctamente"
 }
 
@@ -294,6 +312,19 @@ configure_zsh() {
   fi
 
   success_msg "Zsh configurado correctamente"
+}
+
+# Instalar Zinit
+install_zinit() {
+  print_header "📦 Instalando Zinit"
+
+  if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
+    run_command "command mkdir -p \"$HOME/.local/share/zinit\" && command chmod g-rwX \"$HOME/.local/share/zinit\"" false
+    run_command "command git clone https://github.com/zdharma-continuum/zinit \"$HOME/.local/share/zinit/zinit.git\"" false
+    success_msg "Zinit instalado correctamente"
+  else
+    info_msg "Zinit ya está instalado"
+  fi
 }
 
 # Configurar Neovim
@@ -353,60 +384,6 @@ EOL
     success_msg "Configuración básica de Neovim creada correctamente"
     info_msg "Puedes personalizar tu configuración en: $NVIM_CONFIG_DIR"
   fi
-}
-
-# Configurar Tmux
-configure_tmux() {
-  print_header "📟 Configurando Tmux"
-
-  # Verificar si tmux está instalado
-  if ! command -v tmux &>/dev/null; then
-    info_msg "Instalando tmux..."
-    run_command "sudo apt-get install -y tmux" false "Error al instalar tmux"
-  fi
-
-  # Crear el directorio de configuración si no existe
-  if [ ! -d "$TMUX_CONFIG_DIR" ]; then
-    run_command "mkdir -p $TMUX_CONFIG_DIR/plugins" false
-  fi
-
-  # Instalar Tmux Plugin Manager (TPM) si no existe
-  if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    run_command "git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm" false
-  else
-    info_msg "Tmux Plugin Manager ya está instalado"
-  fi
-
-  # Copiar configuración de Tmux
-  if [ -d "$DOTFILES_PATH/.tmux" ]; then
-    run_command "cp -r $DOTFILES_PATH/.tmux/* $TMUX_CONFIG_DIR/" false
-  fi
-
-  if [ -f "$DOTFILES_PATH/.tmux.conf" ]; then
-    run_command "cp $DOTFILES_PATH/.tmux.conf $HOME/" false
-  fi
-
-  # Instalar plugins de Tmux
-  info_msg "Instalando plugins de Tmux..."
-
-  # Matar sesión anterior si existe
-  if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
-    run_command "tmux kill-session -t $TMUX_SESSION_NAME" true
-  fi
-
-  # Crear una nueva sesión de tmux e instalar plugins
-  run_command "tmux new-session -d -s $TMUX_SESSION_NAME 'bash -c \"source ~/.tmux.conf && ~/.tmux/plugins/tpm/bin/install_plugins\"'" false
-
-  # Esperar a que termine la instalación
-  info_msg "Esperando a que finalice la instalación de plugins de Tmux..."
-  sleep 5
-
-  # Matar la sesión
-  if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
-    run_command "tmux kill-session -t $TMUX_SESSION_NAME" true
-  fi
-
-  success_msg "Tmux configurado correctamente"
 }
 
 # Establecer shell por defecto
@@ -490,25 +467,6 @@ setup_config_dir() {
 # }
 EOL
 
-  # Crear archivo de configuración de Tmux (para personalización fácil)
-  cat >"$DOTS_CONFIG_DIR/terminal/tmux_custom.conf" <<'EOL'
-# Configuración personalizada de Tmux
-# Este archivo se incluye desde .tmux.conf y no será sobrescrito
-
-# Agrega aquí tus personalizaciones:
-
-# Ejemplo: Cambiar el prefijo
-# unbind C-b
-# set -g prefix C-a
-# bind C-a send-prefix
-
-# Ejemplo: Configurar teclas de navegación
-# bind h select-pane -L
-# bind j select-pane -D
-# bind k select-pane -U
-# bind l select-pane -R
-EOL
-
   # Crear archivo de configuración para desarrollo (herramientas)
   cat >"$DOTS_CONFIG_DIR/development/tools.sh" <<'EOL'
 # Configuración de herramientas de desarrollo
@@ -551,7 +509,6 @@ para adaptar tu entorno de desarrollo a tus necesidades.
   - `php.omp.json`: Configuración de Oh-My-Posh
 
 - **terminal/**: Configuraciones para el terminal
-  - `tmux_custom.conf`: Personalizaciones para Tmux
 
 - **development/**: Configuraciones para herramientas de desarrollo
   - `tools.sh`: Configuración de herramientas y lenguajes
@@ -588,14 +545,6 @@ update_config_references() {
     if ! grep -q "DOTS_CONFIG_DIR" "$HOME/.zshrc"; then
       echo -e "\n# Cargar configuraciones personalizadas\nDOTS_CONFIG_DIR=\"\$HOME/dots.config\"\n[[ -f \"\$DOTS_CONFIG_DIR/shell/zsh_custom.zsh\" ]] && source \"\$DOTS_CONFIG_DIR/shell/zsh_custom.zsh\"" >>"$HOME/.zshrc"
       success_msg "Configuración personalizada añadida a .zshrc"
-    fi
-  fi
-
-  # Actualizar referencia en .tmux.conf (si existe)
-  if [ -f "$HOME/.tmux.conf" ]; then
-    if ! grep -q "dots.config/terminal/tmux_custom.conf" "$HOME/.tmux.conf"; then
-      echo -e "\n# Cargar configuración personalizada\nif-shell \"test -f ~/dots.config/terminal/tmux_custom.conf\" \"source ~/dots.config/terminal/tmux_custom.conf\"" >>"$HOME/.tmux.conf"
-      success_msg "Configuración personalizada añadida a .tmux.conf"
     fi
   fi
 
@@ -660,11 +609,11 @@ main() {
   install_brew_packages
   install_additional_tools
   configure_zsh
+  install_zinit
   setup_zsh_structure
   setup_config_dir         # Nueva función para crear estructura de configuración centralizada
   update_config_references # Nueva función para actualizar referencias de archivos
   configure_neovim
-  configure_tmux
   set_default_shell
   cleanup
 

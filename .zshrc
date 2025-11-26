@@ -2,92 +2,59 @@
 # CONFIGURACIÓN DE ZSH PERSONALIZADA
 #=========================================================
 
-# Evitar carga duplicada del sistema de completado
 skip_global_compinit=1
 
 #-----------------------------------------
 # CONFIGURACIÓN BÁSICA DE ZSH
 #-----------------------------------------
 autoload -Uz compinit
-compinit
+compinit -C
 setopt interactive_comments
-
-# Opciones de shell
-setopt glob_dots     # No tratar de forma especial los archivos que comienzan con punto
+setopt glob_dots
 
 #-----------------------------------------
 # CARGA DE MÓDULOS Y PLUGINS
 #-----------------------------------------
-# Definir rutas para módulos
 ZSH_CONFIG_DIR="$HOME/.zsh"
 ZSH_LIB_DIR="$ZSH_CONFIG_DIR/lib"
 ZSH_TOOLS_DIR="$ZSH_CONFIG_DIR/tools"
-ZSH_PLUGINS_DIR="$ZSH_CONFIG_DIR/plugins"
 
-# Función para cargar módulos si existen
 function load_module() {
   [[ -f "$1" ]] && source "$1"
 }
 
-# Cargar configuraciones base esenciales
 load_module "$ZSH_LIB_DIR/path.zsh"
 load_module "$ZSH_LIB_DIR/aliases.zsh"
 load_module "$ZSH_LIB_DIR/functions.zsh"
 load_module "$ZSH_LIB_DIR/completions.zsh"
 
-# Inicializar Homebrew (necesario antes de cargar otras herramientas)
+# Homebrew
 BREW_BIN="/home/linuxbrew/.linuxbrew/bin"
 if [[ -f "$BREW_BIN/brew" ]]; then
   eval "$($BREW_BIN/brew shellenv)"
-  # Asegurarnos de que BREW_PREFIX esté definido para los plugins
-  BREW_PREFIX=$(brew --prefix)
 fi
 
-# Cargar configuraciones de herramientas (orden importante)
-load_module "$ZSH_TOOLS_DIR/prompt.zsh"     # Oh-my-posh
-load_module "$ZSH_TOOLS_DIR/terminal.zsh"   # WezTerm, tmux
-load_module "$ZSH_TOOLS_DIR/fzf.zsh"        # FZF y plugins relacionados
-load_module "$ZSH_TOOLS_DIR/navigation.zsh" # Zoxide
-load_module "$ZSH_TOOLS_DIR/dev.zsh"        # Herramientas de desarrollo generales
-load_module "$ZSH_TOOLS_DIR/php.zsh"        # PHP/Laravel
-load_module "$ZSH_TOOLS_DIR/node.zsh"       # Node.js, pnpm, fnm
-load_module "$ZSH_TOOLS_DIR/golang.zsh"     # Go
-load_module "$ZSH_TOOLS_DIR/docker.zsh"     # Docker
-load_module "$ZSH_TOOLS_DIR/bindings.zsh"   # Bindings y atajos de teclado
+# Cargar herramientas
+load_module "$ZSH_TOOLS_DIR/prompt.zsh"
+load_module "$ZSH_TOOLS_DIR/terminal.zsh"
+load_module "$ZSH_TOOLS_DIR/fzf.zsh"
+load_module "$ZSH_TOOLS_DIR/navigation.zsh"
+load_module "$ZSH_TOOLS_DIR/bindings.zsh"
 
-# Cargar plugins de ZSH - Verificando existencia antes de cargar
-# Mejora de la detección de plugins de zsh
-if [[ -d "$BREW_PREFIX/share/zsh-syntax-highlighting" ]]; then
-  source "$BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
+#-----------------------------------------
+# ZINIT Y PLUGINS
+#-----------------------------------------
+source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
 
-if [[ -d "$BREW_PREFIX/share/zsh-autosuggestions" ]]; then
-  source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
-fi
+zinit light "Aloxaf/fzf-tab"
+zinit light "zsh-users/zsh-autosuggestions"
+zinit light "zdharma-continuum/fast-syntax-highlighting"
 
-# Cargar fzf-tab (asegurar que se carga después de otros plugins)
-if [[ -d "$ZSH_PLUGINS_DIR/fzf-tab" ]]; then
-  source "$ZSH_PLUGINS_DIR/fzf-tab/fzf-tab.plugin.zsh"
-elif [[ -d "$HOME/dots.config/plugins/fzf-tab" ]]; then
-  source "$HOME/dots.config/plugins/fzf-tab/fzf-tab.plugin.zsh"
-fi
+# Cargar lazy loading
+load_module "$ZSH_LIB_DIR/lazy_load.zsh"
 
-# Cargar atuin (historial de comandos) - Método mejorado con fallback
-if [[ -f "$HOME/.atuin/bin/env" ]]; then
-  # Método antiguo que el usuario tenía configurado
-  . "$HOME/.atuin/bin/env"
-  eval "$(atuin init zsh)"
-elif [[ -d "$HOME/.local/share/atuin" ]]; then
-  # Verificar si atuin está en esta ubicación común
-  export PATH="$HOME/.local/share/atuin:$PATH"
-  if command -v atuin >/dev/null 2>&1; then
-    eval "$(atuin init zsh)"
-  fi
-elif command -v atuin >/dev/null 2>&1; then
-  # Si atuin está en el PATH por cualquier otro método
-  eval "$(atuin init zsh)"
-fi
-
-# Cargar configuraciones personalizadas
+# Config personalizada
 DOTS_CONFIG_DIR="$HOME/dots.config"
 [[ -f "$DOTS_CONFIG_DIR/shell/zsh_custom.zsh" ]] && source "$DOTS_CONFIG_DIR/shell/zsh_custom.zsh"
