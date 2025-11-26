@@ -62,9 +62,29 @@ NVIM_CONFIG_DIR="$CONFIG_DIR/nvim"
 
 # Función para imprimir encabezados
 print_header() {
-  echo -e "${BLUE}=================================================${RESET}"
-  echo -e "${BOLD}${GREEN}$1${RESET}"
-  echo -e "${BLUE}=================================================${RESET}"
+  local text="$1"
+  local len=${#text}
+  local width=$((len + 4))
+  local top_bottom=$(printf '═%.0s' $(seq 1 $width))
+  echo -e "${BLUE}╔${top_bottom}╗${RESET}"
+  echo -e "${BLUE}║  ${BOLD}${GREEN}${text}${RESET}  ${BLUE}║${RESET}"
+  echo -e "${BLUE}╚${top_bottom}╝${RESET}"
+  echo
+}
+
+# Función para mostrar un spinner
+spinner() {
+  local pid=$1
+  local delay=0.1
+  local spinstr='|/-\'
+  while ps -p $pid > /dev/null; do
+    local temp=${spinstr#?}
+    printf " [%c]  " "$spinstr"
+    local spinstr=$temp${spinstr%"$temp"}
+    sleep $delay
+    printf "\b\b\b\b\b\b"
+  done
+  printf "    \b\b\b\b\b"
 }
 
 # Función para imprimir mensajes de éxito
@@ -91,7 +111,12 @@ run_command() {
   info_msg "Ejecutando: $command"
 
   if [ "$hide_output" = "true" ]; then
-    if eval "$command" &>/dev/null; then
+    eval "$command" &>/dev/null &
+    local cmd_pid=$!
+    spinner $cmd_pid
+    wait $cmd_pid
+    local exit_code=$?
+    if [ $exit_code -eq 0 ]; then
       success_msg "Comando ejecutado con éxito"
     else
       error_msg "$error_message"
@@ -561,6 +586,10 @@ cleanup() {
 # =====================================================
 
 main() {
+  echo -e "${PURPLE}${BOLD}🚀 Bienvenido al Instalador Moderno de Dotfiles${RESET}"
+  echo -e "${BLUE}Configurando tu entorno de desarrollo con estilo...${RESET}"
+  echo
+
   print_header "🚀 Iniciando instalación de dotfiles"
 
   # Guardar directorio original
