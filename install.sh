@@ -568,8 +568,15 @@ cleanup() {
     cd "$ORIGINAL_DIR"
   fi
 
-  # Nota: No eliminar el repositorio ni el script de instalación
-  # Esto evita problemas si el script se está ejecutando desde el repositorio
+  # Eliminar el repositorio clonado y el script de instalación
+  if [ -d "$REPO_DIR" ]; then
+    run_command "rm -rf $REPO_DIR" false
+  fi
+
+  if [ -f "install.sh" ]; then
+    run_command "rm -f install.sh" false
+  fi
+
   success_msg "Limpieza completada"
 }
 
