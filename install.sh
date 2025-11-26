@@ -294,14 +294,6 @@ install_additional_tools() {
     info_msg "atuin ya está instalado"
   fi
 
-  # Instalar Composer para PHP
-  if ! is_installed composer; then
-    info_msg "Instalando Composer..."
-    run_command "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer" false
-  else
-    info_msg "Composer ya está instalado"
-  fi
-
   # Configurar Docker si está instalado
   if is_installed docker; then
     info_msg "Configurando Docker..."
