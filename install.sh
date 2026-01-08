@@ -49,7 +49,6 @@ APT_PACKAGES=(
   "lsd"
   "unzip"
   "p7zip"
-  "docker.io"
 )
 
 # Directorios
