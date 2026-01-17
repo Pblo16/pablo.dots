@@ -2,52 +2,161 @@
 # LAZY LOADING DE HERRAMIENTAS
 #-----------------------------------------
 # Este archivo contiene las funciones de lazy loading para cargar herramientas solo cuando se usan.
-# Agrega tus propios lazy loads aquí siguiendo el patrón.
+# Usamos funciones stub que cargan el módulo la primera vez que se ejecutan.
 
 # Lazy loading para herramientas de desarrollo
-function lazy_load_dev() {
-  if [[ "$1" =~ ^(lg|pg|my) ]]; then
+function lg() {
+  if [[ -z "$DEV_LOADED" ]]; then
     load_module "$ZSH_TOOLS_DIR/dev.zsh"
-    add-zsh-hook -d preexec lazy_load_dev
+    export DEV_LOADED=1
   fi
+  unfunction lg
+  lg "$@"
 }
-add-zsh-hook preexec lazy_load_dev
+function pg() {
+  if [[ -z "$DEV_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/dev.zsh"
+    export DEV_LOADED=1
+  fi
+  unfunction pg
+  pg "$@"
+}
+function my() {
+  if [[ -z "$DEV_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/dev.zsh"
+    export DEV_LOADED=1
+  fi
+  unfunction my
+  my "$@"
+}
 
 # Lazy loading para PHP/Laravel
-function lazy_load_php() {
-  if [[ "$1" =~ ^(php|composer|pa|sail|pint) ]]; then
+function php() {
+  if [[ -z "$PHP_LOADED" ]]; then
     load_module "$ZSH_TOOLS_DIR/php.zsh"
-    add-zsh-hook -d preexec lazy_load_php
+    export PHP_LOADED=1
   fi
+  unfunction php
+  php "$@"
 }
-add-zsh-hook preexec lazy_load_php
+function composer() {
+  if [[ -z "$PHP_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/php.zsh"
+    export PHP_LOADED=1
+  fi
+  unfunction composer
+  composer "$@"
+}
+function pa() {
+  if [[ -z "$PHP_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/php.zsh"
+    export PHP_LOADED=1
+  fi
+  unfunction pa
+  pa "$@"
+}
+function sail() {
+  if [[ -z "$PHP_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/php.zsh"
+    export PHP_LOADED=1
+  fi
+  unfunction sail
+  sail "$@"
+}
+function pint() {
+  if [[ -z "$PHP_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/php.zsh"
+    export PHP_LOADED=1
+  fi
+  unfunction pint
+  pint "$@"
+}
 
 # Lazy loading para Node.js
-function lazy_load_node() {
-  if [[ "$1" =~ ^(node|npm|pnpm|bun|pn|nr|nx|fnm) ]]; then
+function node() {
+  if [[ -z "$NODE_LOADED" ]]; then
     load_module "$ZSH_TOOLS_DIR/node.zsh"
-    add-zsh-hook -d preexec lazy_load_node
+    export NODE_LOADED=1
   fi
+  unfunction node
+  node "$@"
 }
-add-zsh-hook preexec lazy_load_node
+function npm() {
+  if [[ -z "$NODE_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/node.zsh"
+    export NODE_LOADED=1
+  fi
+  unfunction npm
+  npm "$@"
+}
+function pnpm() {
+  if [[ -z "$NODE_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/node.zsh"
+    export NODE_LOADED=1
+  fi
+  unfunction pnpm
+  pnpm "$@"
+}
+function bun() {
+  if [[ -z "$NODE_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/node.zsh"
+    export NODE_LOADED=1
+  fi
+  unfunction bun
+  bun "$@"
+}
+function pn() {
+  if [[ -z "$NODE_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/node.zsh"
+    export NODE_LOADED=1
+  fi
+  unfunction pn
+  pn "$@"
+}
+function nr() {
+  if [[ -z "$NODE_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/node.zsh"
+    export NODE_LOADED=1
+  fi
+  unfunction nr
+  nr "$@"
+}
+function nx() {
+  if [[ -z "$NODE_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/node.zsh"
+    export NODE_LOADED=1
+  fi
+  unfunction nx
+  nx "$@"
+}
+function fnm() {
+  if [[ -z "$NODE_LOADED" ]]; then
+    load_module "$ZSH_TOOLS_DIR/node.zsh"
+    export NODE_LOADED=1
+  fi
+  unfunction fnm
+  fnm "$@"
+}
 
 # Lazy loading para Go
-function lazy_load_golang() {
-  if [[ "$1" =~ ^go ]]; then
+function go() {
+  if [[ -z "$GO_LOADED" ]]; then
     load_module "$ZSH_TOOLS_DIR/golang.zsh"
-    add-zsh-hook -d preexec lazy_load_golang
+    export GO_LOADED=1
   fi
+  unfunction go
+  go "$@"
 }
-add-zsh-hook preexec lazy_load_golang
 
 # Lazy loading para Docker
-function lazy_load_docker() {
-  if [[ "$1" =~ ^docker ]]; then
+function docker() {
+  if [[ -z "$DOCKER_LOADED" ]]; then
     load_module "$ZSH_TOOLS_DIR/docker.zsh"
-    add-zsh-hook -d preexec lazy_load_docker
+    export DOCKER_LOADED=1
   fi
+  unfunction docker
+  docker "$@"
 }
-add-zsh-hook preexec lazy_load_docker
 
 # Atuin lazy loading
 function atuin_lazy_load() {
