@@ -292,15 +292,7 @@ install_additional_tools() {
   else
     info_msg "atuin ya está instalado"
   fi
-
-  # Configurar Docker si está instalado
-  if is_installed docker; then
-    info_msg "Configurando Docker..."
-    run_command "sudo usermod -aG docker $USER" false
-    run_command "sudo systemctl enable docker" false
-    run_command "sudo systemctl start docker" false
-  fi
-
+  
   success_msg "Herramientas adicionales instaladas correctamente"
 }
 
